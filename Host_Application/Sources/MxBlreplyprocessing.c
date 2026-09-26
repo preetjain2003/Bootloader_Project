@@ -1,0 +1,72 @@
+#include "MxTypedef.h"
+#include "MxBlcommands.h"
+#include "MxWindows_serial_port.h"
+
+UINT8 data_packed[MAX_COMMAND_LENGTH];
+
+static int read_the_len_and_status(void);
+
+void reply_processing(UINT8 command)
+{
+
+    INT status = NACK;
+    switch (command)
+    {
+
+    default:
+        printf("Invalid command for processing \n");
+        break;
+
+    case BL_GET_VER:
+
+        /*Read the status and Length*/
+        status = read_the_len_and_status();
+
+        if (status == ACK)
+        {
+
+            /*Read the data from the serial port*/
+            if (read_data(data_packed, status) < 0)
+            {
+                printf("Read Failed ! \n");
+            }
+
+            else
+            {
+                printf("Data Read Succesfully \n");
+                printf("Version : %d \n", data_packed[0]);  
+            }
+        }
+
+        break;
+    }
+}
+
+static INT read_the_len_and_status()
+{
+    /*Read the ACK/NACK and length*/
+    UINT8 status_read[2];
+
+    if (read_data(status_read, 2) < 0)
+    {
+        printf("Read Failed ! \n");
+    }
+
+    if (status_read[0] == NACK)
+    {
+        printf("NACK Recieved \n");
+        return -1;
+    }
+
+    else if (status_read[0] == ACK)
+    {
+        printf("ACK Recieved \n");
+
+        // Return the length
+        printf("Length to follow : %d \n", status_read[1]);
+        return status_read[1];
+        
+    }
+
+    return -1;
+}
