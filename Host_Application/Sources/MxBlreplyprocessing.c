@@ -22,7 +22,7 @@ void reply_processing(UINT8 command)
         /*Read the status and Length*/
         status = read_the_len_and_status();
 
-        if (status == ACK)
+        if (status > 0)
         {
 
             /*Read the data from the serial port*/
@@ -34,8 +34,15 @@ void reply_processing(UINT8 command)
             else
             {
                 printf("Data Read Succesfully \n");
-                printf("Version : %d \n", data_packed[0]);  
+                data_packed[status] = '\0'; // Null terminate the string
+                printf("Version : %s \n", (char*)data_packed);  
             }
+        }
+
+
+        else
+        {
+            printf("NACK Recieved with error code : %d \n", -1*status);
         }
 
         break;
@@ -55,7 +62,7 @@ static INT read_the_len_and_status()
     if (status_read[0] == NACK)
     {
         printf("NACK Recieved \n");
-        return -1;
+        return -1*status_read[1];
     }
 
     else if (status_read[0] == ACK)
@@ -64,7 +71,7 @@ static INT read_the_len_and_status()
 
         // Return the length
         printf("Length to follow : %d \n", status_read[1]);
-        return status_read[1];
+        return +1*status_read[1];
         
     }
 

@@ -3,7 +3,7 @@
 #include<MxBlcommands.h>
 
 
-#define COMM_PORT "\\\\.\\COM3"
+#define COMM_PORT "\\\\.\\COM20"
 int main()
 {
     UINT32 command;
@@ -27,13 +27,14 @@ int main()
         printf("\n Exit -> 13 \n");
 
         printf("\n Enter the commands : ");
-        scanf("%lu\n",&command);
+        scanf("%lu",&command);
 
         if(command == 13){
             printf("Exit from the host \n");
             exit(1);
         }
 
+        printf("Processing the command : %lu \n",command);
         processing_the_command(command);
 
     }

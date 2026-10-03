@@ -1,0 +1,28 @@
+/*
+ * MxLogger.c
+ *
+ *  Created on: Sep 26, 2026
+ *      Author: ASUS
+ */
+
+#include "stm32f4xx_hal.h"
+
+#include <MxTypedef.h>
+
+#define MAX_LENGTH_TO_PRINT 200
+
+
+void PRINT(UART_HandleTypeDef uart_type, const char *file, const char *function, int line, const char *format, ...)
+{
+
+	char data_send[MAX_LENGTH_TO_PRINT];
+	char complete_data[2*MAX_LENGTH_TO_PRINT];
+	va_list ap;
+
+	va_start(ap, format);
+
+	vsprintf(data_send, format, ap);
+
+	sprintf(complete_data, "%s:%s:%d:%s", file, function, line, data_send);
+	HAL_UART_Transmit(&uart_type, (UINT8*)complete_data, (UINT16)strlen(complete_data), HAL_MAX_DELAY);
+}

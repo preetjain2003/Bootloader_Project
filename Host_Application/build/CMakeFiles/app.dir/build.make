@@ -52,10 +52,10 @@ RM = "C:\Program Files\CMake\bin\cmake.exe" -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = "D:\Bootloader Project\Host Application"
+CMAKE_SOURCE_DIR = "D:\Bootloader Project\Host_Application"
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = "D:\Bootloader Project\Host Application\build"
+CMAKE_BINARY_DIR = "D:\Bootloader Project\Host_Application\build"
 
 # Include any dependencies generated for this target.
 include CMakeFiles/app.dir/depend.make
@@ -73,93 +73,93 @@ CMakeFiles/app.dir/codegen:
 
 CMakeFiles/app.dir/Sources/MxBlcommands.c.obj: CMakeFiles/app.dir/flags.make
 CMakeFiles/app.dir/Sources/MxBlcommands.c.obj: CMakeFiles/app.dir/includes_C.rsp
-CMakeFiles/app.dir/Sources/MxBlcommands.c.obj: D:/Bootloader\ Project/Host\ Application/Sources/MxBlcommands.c
+CMakeFiles/app.dir/Sources/MxBlcommands.c.obj: D:/Bootloader\ Project/Host_Application/Sources/MxBlcommands.c
 CMakeFiles/app.dir/Sources/MxBlcommands.c.obj: CMakeFiles/app.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="D:\Bootloader Project\Host Application\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/app.dir/Sources/MxBlcommands.c.obj"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/app.dir/Sources/MxBlcommands.c.obj -MF CMakeFiles\app.dir\Sources\MxBlcommands.c.obj.d -o CMakeFiles\app.dir\Sources\MxBlcommands.c.obj -c "D:\Bootloader Project\Host Application\Sources\MxBlcommands.c"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="D:\Bootloader Project\Host_Application\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_1) "Building C object CMakeFiles/app.dir/Sources/MxBlcommands.c.obj"
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/app.dir/Sources/MxBlcommands.c.obj -MF CMakeFiles\app.dir\Sources\MxBlcommands.c.obj.d -o CMakeFiles\app.dir\Sources\MxBlcommands.c.obj -c "D:\Bootloader Project\Host_Application\Sources\MxBlcommands.c"
 
 CMakeFiles/app.dir/Sources/MxBlcommands.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/app.dir/Sources/MxBlcommands.c.i"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "D:\Bootloader Project\Host Application\Sources\MxBlcommands.c" > CMakeFiles\app.dir\Sources\MxBlcommands.c.i
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "D:\Bootloader Project\Host_Application\Sources\MxBlcommands.c" > CMakeFiles\app.dir\Sources\MxBlcommands.c.i
 
 CMakeFiles/app.dir/Sources/MxBlcommands.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/app.dir/Sources/MxBlcommands.c.s"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "D:\Bootloader Project\Host Application\Sources\MxBlcommands.c" -o CMakeFiles\app.dir\Sources\MxBlcommands.c.s
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "D:\Bootloader Project\Host_Application\Sources\MxBlcommands.c" -o CMakeFiles\app.dir\Sources\MxBlcommands.c.s
 
 CMakeFiles/app.dir/Sources/MxBlreplyprocessing.c.obj: CMakeFiles/app.dir/flags.make
 CMakeFiles/app.dir/Sources/MxBlreplyprocessing.c.obj: CMakeFiles/app.dir/includes_C.rsp
-CMakeFiles/app.dir/Sources/MxBlreplyprocessing.c.obj: D:/Bootloader\ Project/Host\ Application/Sources/MxBlreplyprocessing.c
+CMakeFiles/app.dir/Sources/MxBlreplyprocessing.c.obj: D:/Bootloader\ Project/Host_Application/Sources/MxBlreplyprocessing.c
 CMakeFiles/app.dir/Sources/MxBlreplyprocessing.c.obj: CMakeFiles/app.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="D:\Bootloader Project\Host Application\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/app.dir/Sources/MxBlreplyprocessing.c.obj"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/app.dir/Sources/MxBlreplyprocessing.c.obj -MF CMakeFiles\app.dir\Sources\MxBlreplyprocessing.c.obj.d -o CMakeFiles\app.dir\Sources\MxBlreplyprocessing.c.obj -c "D:\Bootloader Project\Host Application\Sources\MxBlreplyprocessing.c"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="D:\Bootloader Project\Host_Application\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/app.dir/Sources/MxBlreplyprocessing.c.obj"
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/app.dir/Sources/MxBlreplyprocessing.c.obj -MF CMakeFiles\app.dir\Sources\MxBlreplyprocessing.c.obj.d -o CMakeFiles\app.dir\Sources\MxBlreplyprocessing.c.obj -c "D:\Bootloader Project\Host_Application\Sources\MxBlreplyprocessing.c"
 
 CMakeFiles/app.dir/Sources/MxBlreplyprocessing.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/app.dir/Sources/MxBlreplyprocessing.c.i"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "D:\Bootloader Project\Host Application\Sources\MxBlreplyprocessing.c" > CMakeFiles\app.dir\Sources\MxBlreplyprocessing.c.i
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "D:\Bootloader Project\Host_Application\Sources\MxBlreplyprocessing.c" > CMakeFiles\app.dir\Sources\MxBlreplyprocessing.c.i
 
 CMakeFiles/app.dir/Sources/MxBlreplyprocessing.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/app.dir/Sources/MxBlreplyprocessing.c.s"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "D:\Bootloader Project\Host Application\Sources\MxBlreplyprocessing.c" -o CMakeFiles\app.dir\Sources\MxBlreplyprocessing.c.s
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "D:\Bootloader Project\Host_Application\Sources\MxBlreplyprocessing.c" -o CMakeFiles\app.dir\Sources\MxBlreplyprocessing.c.s
 
 CMakeFiles/app.dir/Sources/MxFileops.c.obj: CMakeFiles/app.dir/flags.make
 CMakeFiles/app.dir/Sources/MxFileops.c.obj: CMakeFiles/app.dir/includes_C.rsp
-CMakeFiles/app.dir/Sources/MxFileops.c.obj: D:/Bootloader\ Project/Host\ Application/Sources/MxFileops.c
+CMakeFiles/app.dir/Sources/MxFileops.c.obj: D:/Bootloader\ Project/Host_Application/Sources/MxFileops.c
 CMakeFiles/app.dir/Sources/MxFileops.c.obj: CMakeFiles/app.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="D:\Bootloader Project\Host Application\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/app.dir/Sources/MxFileops.c.obj"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/app.dir/Sources/MxFileops.c.obj -MF CMakeFiles\app.dir\Sources\MxFileops.c.obj.d -o CMakeFiles\app.dir\Sources\MxFileops.c.obj -c "D:\Bootloader Project\Host Application\Sources\MxFileops.c"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="D:\Bootloader Project\Host_Application\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/app.dir/Sources/MxFileops.c.obj"
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/app.dir/Sources/MxFileops.c.obj -MF CMakeFiles\app.dir\Sources\MxFileops.c.obj.d -o CMakeFiles\app.dir\Sources\MxFileops.c.obj -c "D:\Bootloader Project\Host_Application\Sources\MxFileops.c"
 
 CMakeFiles/app.dir/Sources/MxFileops.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/app.dir/Sources/MxFileops.c.i"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "D:\Bootloader Project\Host Application\Sources\MxFileops.c" > CMakeFiles\app.dir\Sources\MxFileops.c.i
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "D:\Bootloader Project\Host_Application\Sources\MxFileops.c" > CMakeFiles\app.dir\Sources\MxFileops.c.i
 
 CMakeFiles/app.dir/Sources/MxFileops.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/app.dir/Sources/MxFileops.c.s"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "D:\Bootloader Project\Host Application\Sources\MxFileops.c" -o CMakeFiles\app.dir\Sources\MxFileops.c.s
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "D:\Bootloader Project\Host_Application\Sources\MxFileops.c" -o CMakeFiles\app.dir\Sources\MxFileops.c.s
 
 CMakeFiles/app.dir/Sources/MxMain.c.obj: CMakeFiles/app.dir/flags.make
 CMakeFiles/app.dir/Sources/MxMain.c.obj: CMakeFiles/app.dir/includes_C.rsp
-CMakeFiles/app.dir/Sources/MxMain.c.obj: D:/Bootloader\ Project/Host\ Application/Sources/MxMain.c
+CMakeFiles/app.dir/Sources/MxMain.c.obj: D:/Bootloader\ Project/Host_Application/Sources/MxMain.c
 CMakeFiles/app.dir/Sources/MxMain.c.obj: CMakeFiles/app.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="D:\Bootloader Project\Host Application\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/app.dir/Sources/MxMain.c.obj"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/app.dir/Sources/MxMain.c.obj -MF CMakeFiles\app.dir\Sources\MxMain.c.obj.d -o CMakeFiles\app.dir\Sources\MxMain.c.obj -c "D:\Bootloader Project\Host Application\Sources\MxMain.c"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="D:\Bootloader Project\Host_Application\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/app.dir/Sources/MxMain.c.obj"
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/app.dir/Sources/MxMain.c.obj -MF CMakeFiles\app.dir\Sources\MxMain.c.obj.d -o CMakeFiles\app.dir\Sources\MxMain.c.obj -c "D:\Bootloader Project\Host_Application\Sources\MxMain.c"
 
 CMakeFiles/app.dir/Sources/MxMain.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/app.dir/Sources/MxMain.c.i"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "D:\Bootloader Project\Host Application\Sources\MxMain.c" > CMakeFiles\app.dir\Sources\MxMain.c.i
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "D:\Bootloader Project\Host_Application\Sources\MxMain.c" > CMakeFiles\app.dir\Sources\MxMain.c.i
 
 CMakeFiles/app.dir/Sources/MxMain.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/app.dir/Sources/MxMain.c.s"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "D:\Bootloader Project\Host Application\Sources\MxMain.c" -o CMakeFiles\app.dir\Sources\MxMain.c.s
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "D:\Bootloader Project\Host_Application\Sources\MxMain.c" -o CMakeFiles\app.dir\Sources\MxMain.c.s
 
 CMakeFiles/app.dir/Sources/MxUtilities.c.obj: CMakeFiles/app.dir/flags.make
 CMakeFiles/app.dir/Sources/MxUtilities.c.obj: CMakeFiles/app.dir/includes_C.rsp
-CMakeFiles/app.dir/Sources/MxUtilities.c.obj: D:/Bootloader\ Project/Host\ Application/Sources/MxUtilities.c
+CMakeFiles/app.dir/Sources/MxUtilities.c.obj: D:/Bootloader\ Project/Host_Application/Sources/MxUtilities.c
 CMakeFiles/app.dir/Sources/MxUtilities.c.obj: CMakeFiles/app.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="D:\Bootloader Project\Host Application\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/app.dir/Sources/MxUtilities.c.obj"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/app.dir/Sources/MxUtilities.c.obj -MF CMakeFiles\app.dir\Sources\MxUtilities.c.obj.d -o CMakeFiles\app.dir\Sources\MxUtilities.c.obj -c "D:\Bootloader Project\Host Application\Sources\MxUtilities.c"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="D:\Bootloader Project\Host_Application\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/app.dir/Sources/MxUtilities.c.obj"
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/app.dir/Sources/MxUtilities.c.obj -MF CMakeFiles\app.dir\Sources\MxUtilities.c.obj.d -o CMakeFiles\app.dir\Sources\MxUtilities.c.obj -c "D:\Bootloader Project\Host_Application\Sources\MxUtilities.c"
 
 CMakeFiles/app.dir/Sources/MxUtilities.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/app.dir/Sources/MxUtilities.c.i"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "D:\Bootloader Project\Host Application\Sources\MxUtilities.c" > CMakeFiles\app.dir\Sources\MxUtilities.c.i
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "D:\Bootloader Project\Host_Application\Sources\MxUtilities.c" > CMakeFiles\app.dir\Sources\MxUtilities.c.i
 
 CMakeFiles/app.dir/Sources/MxUtilities.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/app.dir/Sources/MxUtilities.c.s"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "D:\Bootloader Project\Host Application\Sources\MxUtilities.c" -o CMakeFiles\app.dir\Sources\MxUtilities.c.s
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "D:\Bootloader Project\Host_Application\Sources\MxUtilities.c" -o CMakeFiles\app.dir\Sources\MxUtilities.c.s
 
 CMakeFiles/app.dir/Sources/MxWindows_serial_port.c.obj: CMakeFiles/app.dir/flags.make
 CMakeFiles/app.dir/Sources/MxWindows_serial_port.c.obj: CMakeFiles/app.dir/includes_C.rsp
-CMakeFiles/app.dir/Sources/MxWindows_serial_port.c.obj: D:/Bootloader\ Project/Host\ Application/Sources/MxWindows_serial_port.c
+CMakeFiles/app.dir/Sources/MxWindows_serial_port.c.obj: D:/Bootloader\ Project/Host_Application/Sources/MxWindows_serial_port.c
 CMakeFiles/app.dir/Sources/MxWindows_serial_port.c.obj: CMakeFiles/app.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="D:\Bootloader Project\Host Application\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/app.dir/Sources/MxWindows_serial_port.c.obj"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/app.dir/Sources/MxWindows_serial_port.c.obj -MF CMakeFiles\app.dir\Sources\MxWindows_serial_port.c.obj.d -o CMakeFiles\app.dir\Sources\MxWindows_serial_port.c.obj -c "D:\Bootloader Project\Host Application\Sources\MxWindows_serial_port.c"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="D:\Bootloader Project\Host_Application\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/app.dir/Sources/MxWindows_serial_port.c.obj"
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -MD -MT CMakeFiles/app.dir/Sources/MxWindows_serial_port.c.obj -MF CMakeFiles\app.dir\Sources\MxWindows_serial_port.c.obj.d -o CMakeFiles\app.dir\Sources\MxWindows_serial_port.c.obj -c "D:\Bootloader Project\Host_Application\Sources\MxWindows_serial_port.c"
 
 CMakeFiles/app.dir/Sources/MxWindows_serial_port.c.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing C source to CMakeFiles/app.dir/Sources/MxWindows_serial_port.c.i"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "D:\Bootloader Project\Host Application\Sources\MxWindows_serial_port.c" > CMakeFiles\app.dir\Sources\MxWindows_serial_port.c.i
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E "D:\Bootloader Project\Host_Application\Sources\MxWindows_serial_port.c" > CMakeFiles\app.dir\Sources\MxWindows_serial_port.c.i
 
 CMakeFiles/app.dir/Sources/MxWindows_serial_port.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling C source to assembly CMakeFiles/app.dir/Sources/MxWindows_serial_port.c.s"
-	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "D:\Bootloader Project\Host Application\Sources\MxWindows_serial_port.c" -o CMakeFiles\app.dir\Sources\MxWindows_serial_port.c.s
+	C:\MinGW\bin\gcc.exe $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S "D:\Bootloader Project\Host_Application\Sources\MxWindows_serial_port.c" -o CMakeFiles\app.dir\Sources\MxWindows_serial_port.c.s
 
 # Object files for target app
 app_OBJECTS = \
@@ -183,7 +183,7 @@ app.exe: CMakeFiles/app.dir/build.make
 app.exe: CMakeFiles/app.dir/linkLibs.rsp
 app.exe: CMakeFiles/app.dir/objects1.rsp
 app.exe: CMakeFiles/app.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="D:\Bootloader Project\Host Application\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_7) "Linking C executable app.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="D:\Bootloader Project\Host_Application\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_7) "Linking C executable app.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\app.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -195,6 +195,6 @@ CMakeFiles/app.dir/clean:
 .PHONY : CMakeFiles/app.dir/clean
 
 CMakeFiles/app.dir/depend:
-	$(CMAKE_COMMAND) -E cmake_depends "MinGW Makefiles" "D:\Bootloader Project\Host Application" "D:\Bootloader Project\Host Application" "D:\Bootloader Project\Host Application\build" "D:\Bootloader Project\Host Application\build" "D:\Bootloader Project\Host Application\build\CMakeFiles\app.dir\DependInfo.cmake" "--color=$(COLOR)" app
+	$(CMAKE_COMMAND) -E cmake_depends "MinGW Makefiles" "D:\Bootloader Project\Host_Application" "D:\Bootloader Project\Host_Application" "D:\Bootloader Project\Host_Application\build" "D:\Bootloader Project\Host_Application\build" "D:\Bootloader Project\Host_Application\build\CMakeFiles\app.dir\DependInfo.cmake" "--color=$(COLOR)" app
 .PHONY : CMakeFiles/app.dir/depend
 

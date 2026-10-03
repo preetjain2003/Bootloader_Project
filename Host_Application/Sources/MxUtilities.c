@@ -38,7 +38,8 @@ UINT32 crc_calculate(UINT8 *input_data, UINT32 len){
 
     for(UINT32 i = 0; i<len; i++){
         
-        crc = crc_accumulate(input_data[i],crc);
+        UINT32 data = input_data[i];
+        crc = crc_accumulate(data,crc);
     }
 
     return crc;

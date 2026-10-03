@@ -1,27 +1,30 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2026 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
+ ******************************************************************************
+ * @file           : main.c
+ * @brief          : Main program body
+ ******************************************************************************
+ * @attention
+ *
+ * Copyright (c) 2026 STMicroelectronics.
+ * All rights reserved.
+ *
+ * This software is licensed under terms that can be found in the LICENSE file
+ * in the root directory of this software component.
+ * If no LICENSE file comes with this software, it is provided AS-IS.
+ *
+ ******************************************************************************
+ */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "MxTypedef.h"
+#include "MxLogger.h"
+#include "MxBlReplyProcessing.h"
+#include "MxBlCommands.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -47,6 +50,7 @@ UART_HandleTypeDef huart3;
 
 /* USER CODE BEGIN PV */
 
+UINT8 button_pressed_flag = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -56,6 +60,10 @@ static void MX_USART2_UART_Init(void);
 static void MX_CRC_Init(void);
 static void MX_USART3_UART_Init(void);
 /* USER CODE BEGIN PFP */
+static void bootloader_jump_to_user_app(void);
+static void bootloader_execute_command(void);
+static void print_the_payload(UINT8 *data, UINT8 length);
+static BOOL check_checksum(UINT8 *data, UINT8 Length);
 
 /* USER CODE END PFP */
 
@@ -65,9 +73,9 @@ static void MX_USART3_UART_Init(void);
 /* USER CODE END 0 */
 
 /**
-  * @brief  The application entry point.
-  * @retval int
-  */
+ * @brief  The application entry point.
+ * @retval int
+ */
 int main(void)
 {
 
@@ -102,32 +110,43 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+  LOG_MESSAGE(CUART, "Bootloader is running");
   while (1)
   {
     /* USER CODE END WHILE */
-
+    if (button_pressed_flag == 1)
+    {
+      LOG_MESSAGE(CUART, "Button is pressed");
+      bootloader_jump_to_user_app();
+    }
+    else
+    {
+      LOG_MESSAGE(CUART, "Button is not pressed");
+      bootloader_execute_command();
+    }
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
 }
 
 /**
-  * @brief System Clock Configuration
-  * @retval None
-  */
+ * @brief System Clock Configuration
+ * @retval None
+ */
 void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
   /** Configure the main internal regulator output voltage
-  */
+   */
   __HAL_RCC_PWR_CLK_ENABLE();
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
 
   /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
+   * in the RCC_OscInitTypeDef structure.
+   */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
@@ -144,9 +163,8 @@ void SystemClock_Config(void)
   }
 
   /** Initializes the CPU, AHB and APB buses clocks
-  */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+   */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
@@ -159,10 +177,10 @@ void SystemClock_Config(void)
 }
 
 /**
-  * @brief CRC Initialization Function
-  * @param None
-  * @retval None
-  */
+ * @brief CRC Initialization Function
+ * @param None
+ * @retval None
+ */
 static void MX_CRC_Init(void)
 {
 
@@ -181,14 +199,13 @@ static void MX_CRC_Init(void)
   /* USER CODE BEGIN CRC_Init 2 */
 
   /* USER CODE END CRC_Init 2 */
-
 }
 
 /**
-  * @brief USART2 Initialization Function
-  * @param None
-  * @retval None
-  */
+ * @brief USART2 Initialization Function
+ * @param None
+ * @retval None
+ */
 static void MX_USART2_UART_Init(void)
 {
 
@@ -214,14 +231,13 @@ static void MX_USART2_UART_Init(void)
   /* USER CODE BEGIN USART2_Init 2 */
 
   /* USER CODE END USART2_Init 2 */
-
 }
 
 /**
-  * @brief USART3 Initialization Function
-  * @param None
-  * @retval None
-  */
+ * @brief USART3 Initialization Function
+ * @param None
+ * @retval None
+ */
 static void MX_USART3_UART_Init(void)
 {
 
@@ -247,19 +263,18 @@ static void MX_USART3_UART_Init(void)
   /* USER CODE BEGIN USART3_Init 2 */
 
   /* USER CODE END USART3_Init 2 */
-
 }
 
 /**
-  * @brief GPIO Initialization Function
-  * @param None
-  * @retval None
-  */
+ * @brief GPIO Initialization Function
+ * @param None
+ * @retval None
+ */
 static void MX_GPIO_Init(void)
 {
   GPIO_InitTypeDef GPIO_InitStruct = {0};
-/* USER CODE BEGIN MX_GPIO_Init_1 */
-/* USER CODE END MX_GPIO_Init_1 */
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+  /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOC_CLK_ENABLE();
@@ -283,18 +298,105 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
 
-/* USER CODE BEGIN MX_GPIO_Init_2 */
-/* USER CODE END MX_GPIO_Init_2 */
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+  /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
+static void bootloader_jump_to_user_app(void)
+{
 
+  UINT32 msp_value = *(UINT32 *)(USER_APP_SECTOR);
+  LOG_MESSAGE(CUART, "Set the msp value : %x", msp_value);
+
+  UINT32 **reset_handler_address = (UINT32 **)(USER_APP_SECTOR + 4);
+  void (*reset_handler)(void) = (void (*)(void))*reset_handler_address;
+  LOG_MESSAGE(CUART, "Set the reset handler address : %x", reset_handler_address);
+
+  __set_MSP(msp_value);
+  reset_handler();
+}
+
+static void bootloader_execute_command(void)
+{
+  LOG_MESSAGE(CUART, "Bootloader is executing command");
+
+  UINT8 *received_data = Blcommandread();
+  UINT32 length_of_command = received_data[0] + 1;
+  print_the_payload(received_data, length_of_command);
+  if (check_checksum(received_data, length_of_command))
+  {
+    LOG_MESSAGE(CUART, "Checksum failed");
+    send_the_data(NACK); // Send NACK
+    send_the_data(CHECKSUM_FAILED);   
+  }
+  else
+  {
+    LOG_MESSAGE(CUART, "Checksum passed");
+    BLReplyProcessing(received_data,length_of_command); 
+  }
+}
+
+static void print_the_payload(UINT8 *data, UINT8 length)
+{
+  LOG_MESSAGE(CUART, "The payload is : ");
+  for (UINT8 i = 0; i < length; i++)
+  {
+    LOG_MESSAGE(CUART, "Command Response[%d] : 0x%x ", i, data[i]);
+  }
+}
+
+static BOOL check_checksum(UINT8 *data, UINT8 Length)
+{
+  /* Remove the CRC Length */
+  int length_of_command = Length - 4;
+  UINT32 word_to_byte[length_of_command];
+
+  /*Give every byte a word value*/
+  for (UINT8 i = 0; i < length_of_command; i++)
+  {
+    word_to_byte[i] = data[i];
+  }
+
+  /*Calculate the CRC value*/
+  UINT32 calculated_crc = HAL_CRC_Calculate(&hcrc, word_to_byte, length_of_command);
+  LOG_MESSAGE(CUART, "Calculated CRC : 0x%x", calculated_crc);
+
+  /*Get the CRC value from the data*/
+  UINT32 received_crc = 0;
+  for (UINT8 i = 0; i < 4; i++)
+  {
+    received_crc |= (data[length_of_command + i] << (i * 8));
+  }
+
+  LOG_MESSAGE(CUART, "Received CRC : 0x%x", received_crc);
+
+  if (calculated_crc == received_crc)
+    return 0;
+  else
+    return 1;
+}
+
+/*handle Callback*/
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+  LOG_MESSAGE(CUART, "Inside the GPIOs callback");
+  if (GPIO_Pin == GPIO_PIN_13)
+  {
+    LOG_MESSAGE(CUART, "Button is pressed set the flag");
+    button_pressed_flag = 1;
+  }
+}
 /* USER CODE END 4 */
 
 /**
-  * @brief  This function is executed in case of error occurrence.
-  * @retval None
-  */
+ * @brief  This function is executed in case of error occurrence.
+ * @retval None
+ */
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
@@ -306,14 +408,14 @@ void Error_Handler(void)
   /* USER CODE END Error_Handler_Debug */
 }
 
-#ifdef  USE_FULL_ASSERT
+#ifdef USE_FULL_ASSERT
 /**
-  * @brief  Reports the name of the source file and the source line number
-  *         where the assert_param error has occurred.
-  * @param  file: pointer to the source file name
-  * @param  line: assert_param error line source number
-  * @retval None
-  */
+ * @brief  Reports the name of the source file and the source line number
+ *         where the assert_param error has occurred.
+ * @param  file: pointer to the source file name
+ * @param  line: assert_param error line source number
+ * @retval None
+ */
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */

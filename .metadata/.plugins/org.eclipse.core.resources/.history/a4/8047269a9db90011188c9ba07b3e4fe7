@@ -1,0 +1,16 @@
+/*
+ * MxLogger.h
+ *
+ *  Created on: Sep 26, 2026
+ *      Author: ASUS
+ */
+
+#ifndef INC_MXLOGGER_H_
+#define INC_MXLOGGER_H_
+
+typedef enum{
+	C_UART,
+	D_UART
+}Transfer_type_t;
+
+#endif /* INC_MXLOGGER_H_ */

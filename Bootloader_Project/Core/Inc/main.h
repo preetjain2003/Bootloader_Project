@@ -46,6 +46,9 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
+#define BOOTLOADER_MAJOR_VERSION 1
+#define BOOTLOADER_MINOR_VERSION 4
+#define BOOTLOADER_PATCH_VERSION 2
 
 /* USER CODE END EM */
 
@@ -59,6 +62,7 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define B1_Pin GPIO_PIN_13
 #define B1_GPIO_Port GPIOC
+#define B1_EXTI_IRQn EXTI15_10_IRQn
 #define USART_TX_Pin GPIO_PIN_2
 #define USART_TX_GPIO_Port GPIOA
 #define USART_RX_Pin GPIO_PIN_3
@@ -73,6 +77,7 @@ void Error_Handler(void);
 #define SWO_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
+#define USER_APP_SECTOR 0x08008000 
 
 /* USER CODE END Private defines */
 

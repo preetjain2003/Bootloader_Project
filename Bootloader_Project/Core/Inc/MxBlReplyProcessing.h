@@ -1,0 +1,18 @@
+/*
+ * MxBlReplyProcessing.h
+ *
+ *  Created on: Sep 27, 2026
+ *      Author: ASUS
+ */
+
+#ifndef INC_MXBLREPLYPROCESSING_H_
+#define INC_MXBLREPLYPROCESSING_H_
+
+#include "MxTypedef.h"
+
+UINT8* Blcommandread(void);
+void BLReplyProcessing(UINT8 *payload_data, UINT8 length);
+void send_the_data(uint8_t status);
+void send_the_array(uint8_t *data, UINT16 len);
+
+#endif /* INC_MXBLREPLYPROCESSING_H_ */

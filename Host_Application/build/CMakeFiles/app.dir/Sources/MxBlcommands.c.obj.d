@@ -1,6 +1,6 @@
 CMakeFiles/app.dir/Sources/MxBlcommands.c.obj: \
- D:\Bootloader\ Project\Host\ Application\Sources\MxBlcommands.c \
- D:/Bootloader\ Project/Host\ Application/include/MxTypedef.h \
+ D:\Bootloader\ Project\Host_Application\Sources\MxBlcommands.c \
+ D:/Bootloader\ Project/Host_Application/include/MxTypedef.h \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\stdint.h \
  c:\mingw\include\stdint.h c:\mingw\include\_mingw.h \
  c:\mingw\include\msvcrtver.h c:\mingw\include\w32api.h \
@@ -10,8 +10,8 @@ CMakeFiles/app.dir/Sources/MxBlcommands.c.obj: \
  c:\mingw\lib\gcc\mingw32\6.3.0\include\stdarg.h \
  c:\mingw\include\stdlib.h c:\mingw\include\string.h \
  c:\mingw\include\strings.h c:\mingw\include\wchar.h \
- D:/Bootloader\ Project/Host\ Application/include/MxBlcommands.h \
- D:/Bootloader\ Project/Host\ Application/include/MxWindows_serial_port.h \
- D:/Bootloader\ Project/Host\ Application/include/MxTypedef.h \
- D:/Bootloader\ Project/Host\ Application/include/MxUtilities.h \
- D:/Bootloader\ Project/Host\ Application/include/MxBlreplyprocessing.h
+ D:/Bootloader\ Project/Host_Application/include/MxBlcommands.h \
+ D:/Bootloader\ Project/Host_Application/include/MxWindows_serial_port.h \
+ D:/Bootloader\ Project/Host_Application/include/MxTypedef.h \
+ D:/Bootloader\ Project/Host_Application/include/MxUtilities.h \
+ D:/Bootloader\ Project/Host_Application/include/MxBlreplyprocessing.h

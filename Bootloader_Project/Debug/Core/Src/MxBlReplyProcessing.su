@@ -1,0 +1,4 @@
+../Core/Src/MxBlReplyProcessing.c:14:8:Blcommandread	112	static
+../Core/Src/MxBlReplyProcessing.c:37:6:BLReplyProcessing	120	static
+../Core/Src/MxBlReplyProcessing.c:65:6:send_the_data	16	static
+../Core/Src/MxBlReplyProcessing.c:70:6:send_the_array	16	static

@@ -25,15 +25,19 @@ void processing_the_command(UINT32 command){
             data_packed[0] = BL_GET_VER_LEN - 1;
             data_packed[1] = BL_GET_VER_CC;
 
+            printf("Assigned the length and command code \n");
+
             /*Calculate the CRC*/
             crc =  crc_calculate(data_packed,2);
+            printf("Calculated the CRC : 0x%x \n", (unsigned int)crc);
             
             /* Know crc is 32 bytes so we have split into 4 chunks of 8 byte 
               it should folow little endian */
             data_packed[2] = convet_word_to_byte(crc,0);
             data_packed[3] = convet_word_to_byte(crc,1);
             data_packed[4] = convet_word_to_byte(crc,2);
-            data_packed[5] = convet_word_to_byte(crc,3);    
+            data_packed[5] = convet_word_to_byte(crc,3);
+            printf("Added the CRC to the data packed \n");    
 
             /*Send the data packed to serial port*/
             if(!write_data(data_packed,BL_GET_VER_LEN)){
@@ -45,6 +49,7 @@ void processing_the_command(UINT32 command){
                 return;
             }
 
+            printf("Waiting for the reply from the device \n");
             reply_processing(BL_GET_VER);
             break;
     }
