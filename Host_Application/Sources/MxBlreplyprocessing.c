@@ -74,6 +74,37 @@ void reply_processing(UINT8 command)
         {
             printf("NACK Recieved with error code : %d \n", -1 * status);
         }
+
+        break;
+
+    case BL_GET_CID:
+
+        /*Read the status and Length*/
+        status = read_the_len_and_status();
+
+        if (status > 0)
+        {
+
+            /*Read the data from the serial port*/
+            if (read_data(data_packed, status) < 0)
+            {
+                printf("Read Failed ! \n");
+            }
+
+                    else
+                    {
+                        printf("Data Read Succesfully \n");
+                        UINT16 device_id = device_id = (data_packed[0]) | (data_packed[1] << 8);
+                        printf("Device ID : 0x%x \n", device_id);
+                    }
+        }
+
+            else
+        {
+            printf("NACK Recieved with error code : %d \n", -1 * status);
+        }
+
+        break;
     }
 }
 

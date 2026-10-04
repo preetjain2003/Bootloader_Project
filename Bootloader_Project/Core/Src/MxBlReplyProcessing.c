@@ -20,6 +20,8 @@ char* command_name[] = { COMMAND };
 
 UINT8 current_command_processing = 0;
 
+static void get_the_device_id(UINT8 *pData);
+
 UINT8 *Blcommandread(void)
 {
 
@@ -73,6 +75,15 @@ void BLReplyProcessing(UINT8 *payload_data, UINT8 length)
 		for(int i=0;i<TOTAL_COMMAND_SUPPORTED;i++) send_the_data((UINT8)command_code[i]);
 		LOG_MESSAGE_WITH_CC(CUART,"Succesfully send all the command code of bootloader");
 		break;
+
+	case BL_GET_CID_CC:
+		LOG_MESSAGE_WITH_CC(CUART,"Bootloader CID processing started");
+		send_the_data(ACK);
+		send_the_data((UINT8)2);
+		UINT8 *device_id = malloc(sizeof(UINT8)*2);
+		get_the_device_id(device_id);
+		send_the_array(device_id,2);
+		free(device_id);
 	
 	default:
 		LOG_MESSAGE(CUART, "Command code is incorrect so we send NACK");
@@ -92,4 +103,13 @@ void send_the_data(uint8_t status)
 void send_the_array(uint8_t *data, UINT16 len)
 {
 	HAL_UART_Transmit(DUART, data, len, HAL_MAX_DELAY);
+}
+
+static void get_the_device_id(UINT8 *pData){
+	UINT32 *ptr = (UINT32*)0xE0042000;
+	pData[0] = *ptr & 0xFF;
+	pData[1] = (*ptr >> 8) & 0x0F;
+
+	LOG_MESSAGE_WITH_CC(CUART,"Calculated CID is 0x%x%x",pData[1],pData[0]);
+	return;
 }
