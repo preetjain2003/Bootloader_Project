@@ -18,6 +18,7 @@ int command_code[] = { COMMAND };
 char* command_name[] = { COMMAND };
 #undef X
 
+UINT8 current_command_processing = 0;
 
 UINT8 *Blcommandread(void)
 {
@@ -44,25 +45,35 @@ UINT8 *Blcommandread(void)
 
 void BLReplyProcessing(UINT8 *payload_data, UINT8 length)
 {
+	/*Set the command to this variable */
+	current_command_processing = payload_data[1];
+	
+	/* Value start from the 0x51 for 0 indexing */
+	current_command_processing -= 0x51;
 
 	switch (payload_data[1])
 	{
 
 	case BL_GET_VER_CC:
 		char *send_the_version = (char *)malloc(sizeof(char) * 10);
-		LOG_MESSAGE(CUART,"Bootleader Version processing");
+		LOG_MESSAGE_WITH_CC(CUART,"Bootleader Version processing");
 		sprintf(send_the_version, "v%d.%d.%d", BOOTLOADER_MAJOR_VERSION, BOOTLOADER_MINOR_VERSION, BOOTLOADER_PATCH_VERSION);
-		LOG_MESSAGE(CUART,"Bootleader Version : %s",send_the_version);
+		LOG_MESSAGE_WITH_CC(CUART,"Bootleader Version : %s",send_the_version);
 		send_the_data(ACK);
 		send_the_data((UINT8)strlen(send_the_version));
 		send_the_array((UINT8 *)send_the_version, strlen(send_the_version));
-		LOG_MESSAGE(CUART,"Succesfully send the version : %s",send_the_version);
+		LOG_MESSAGE_WITH_CC(CUART,"Succesfully send the version : %s",send_the_version);
 		free(send_the_version);
 		break;
 
 	case BL_GET_HELP_CC:
-		
-
+		LOG_MESSAGE_WITH_CC(CUART,"Bootloader help processing");
+		send_the_data(ACK);
+		send_the_data((UINT8)TOTAL_COMMAND_SUPPORTED);
+		for(int i=0;i<TOTAL_COMMAND_SUPPORTED;i++) send_the_data((UINT8)command_code[i]);
+		LOG_MESSAGE_WITH_CC(CUART,"Succesfully send all the command code of bootloader");
+		break;
+	
 	default:
 		LOG_MESSAGE(CUART, "Command code is incorrect so we send NACK");
 		send_the_data(NACK);

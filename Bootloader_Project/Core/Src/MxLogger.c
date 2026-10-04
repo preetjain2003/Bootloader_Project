@@ -35,3 +35,18 @@ void PRINT(UART_HandleTypeDef uart_type, char *file, const char *function, int l
 	sprintf(complete_data, "%s:%s:%d:%s\r\n", file_name_parse(file), function, line, data_send);
 	HAL_UART_Transmit(&uart_type, (UINT8*)complete_data, (UINT16)strlen(complete_data), HAL_MAX_DELAY);
 }
+
+void PRINT_WITH_CC(char *command_name, UART_HandleTypeDef uart_type, char *file, const char *function, int line, const char *format, ...)
+{
+
+	char data_send[MAX_LENGTH_TO_PRINT];
+	char complete_data[2*MAX_LENGTH_TO_PRINT];
+	va_list ap;
+
+	va_start(ap, format);
+
+	vsprintf(data_send, format, ap);
+
+	sprintf(complete_data, "[%s] %s:%s:%d:%s\r\n", command_name,file_name_parse(file), function, line, data_send);
+	HAL_UART_Transmit(&uart_type, (UINT8*)complete_data, (UINT16)strlen(complete_data), HAL_MAX_DELAY);
+}
