@@ -10,6 +10,14 @@
 #include "MxLogger.h"
 #include "main.h"
 
+#define X(name, hex) hex,
+int command_code[] = { COMMAND };
+#undef X
+
+#define X(name, hex) #name,
+char* command_name[] = { COMMAND };
+#undef X
+
 
 UINT8 *Blcommandread(void)
 {
@@ -51,6 +59,9 @@ void BLReplyProcessing(UINT8 *payload_data, UINT8 length)
 		LOG_MESSAGE(CUART,"Succesfully send the version : %s",send_the_version);
 		free(send_the_version);
 		break;
+
+	case BL_GET_HELP_CC:
+		
 
 	default:
 		LOG_MESSAGE(CUART, "Command code is incorrect so we send NACK");
