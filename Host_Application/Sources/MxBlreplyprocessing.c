@@ -105,6 +105,41 @@ void reply_processing(UINT8 command)
         }
 
         break;
+
+        case BL_GET_RDP_STATUS:
+
+        /*Read the status and Length*/
+        status = read_the_len_and_status();
+
+        if (status > 0)
+        {
+
+            /*Read the data from the serial port*/
+            if (read_data(data_packed, status) < 0)
+            {
+                printf("Read Failed ! \n");
+            }
+
+                    else
+                    {
+                        printf("Data Read Succesfully \n");
+                        UINT8 RDP_status = data_packed[0];
+                        printf("RDP Status is : 0x%x \n", RDP_status);
+
+                        if(RDP_status == 0xAA) printf("RDP Status is : No Protection \n");
+                        else if(RDP_status == 0xCC) printf("RDP Status is :  chip protection (debug and boot from RAM features disabled) \n");
+                        else printf(" read protection of memories (debug features limited) \n");
+                    }
+        }
+
+            else
+        {
+            printf("NACK Recieved with error code : %d \n", -1 * status);
+        }
+
+        break;
+
+    
     }
 }
 

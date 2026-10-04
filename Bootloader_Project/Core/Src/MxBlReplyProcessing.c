@@ -21,6 +21,7 @@ char* command_name[] = { COMMAND };
 UINT8 current_command_processing = 0;
 
 static void get_the_device_id(UINT8 *pData);
+static UINT8 get_the_rdp_status(void);
 
 UINT8 *Blcommandread(void)
 {
@@ -84,7 +85,17 @@ void BLReplyProcessing(UINT8 *payload_data, UINT8 length)
 		get_the_device_id(device_id);
 		send_the_array(device_id,2);
 		free(device_id);
+		LOG_MESSAGE_WITH_CC(CUART,"Succesfully send the device id code");
+		break;
 	
+	case BL_GET_RDP_STATUS_CC:
+		LOG_MESSAGE_WITH_CC(CUART,"Bootloader RDP processing started");
+		send_the_data(ACK);
+		send_the_data((UINT8)1);
+		send_the_data(get_the_rdp_status());
+		LOG_MESSAGE_WITH_CC(CUART,"Succesfully send the RDP status");
+		break;
+		
 	default:
 		LOG_MESSAGE(CUART, "Command code is incorrect so we send NACK");
 		send_the_data(NACK);
@@ -112,4 +123,14 @@ static void get_the_device_id(UINT8 *pData){
 
 	LOG_MESSAGE_WITH_CC(CUART,"Calculated CID is 0x%x%x",pData[1],pData[0]);
 	return;
+}
+
+static UINT8 get_the_rdp_status(void){
+	UINT32 *ptr = (UINT32 *)0x1FFFC000;
+
+	UINT8 rdp_status = (*ptr & 0x0000FF00) >> 8;
+
+	LOG_MESSAGE_WITH_CC(CUART,"Calculated RDP status is 0x%x",rdp_status);
+
+	return rdp_status;
 }
