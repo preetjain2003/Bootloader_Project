@@ -50,6 +50,13 @@ enum{
 /*Max command lenght*/
 #define MAX_COMMAND_LENGTH  255
 
+
+/*Total Command Supported*/
+#define TOTAL_COMMAND_SUPPORTED 12
+
+/*Base of command*/
+#define BASE_OF_COMMAND 0x51
+
 /*ACK and NACK*/
 #define ACK 1
 #define NACK 0

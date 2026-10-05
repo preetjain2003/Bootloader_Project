@@ -22,6 +22,9 @@ UINT8 current_command_processing = 0;
 
 static void get_the_device_id(UINT8 *pData);
 static UINT8 get_the_rdp_status(void);
+static UINT8 verify_address(UINT32 *go_to_address);
+static void dummy_function(void);
+
 
 UINT8 *Blcommandread(void)
 {
@@ -95,7 +98,29 @@ void BLReplyProcessing(UINT8 *payload_data, UINT8 length)
 		send_the_data(get_the_rdp_status());
 		LOG_MESSAGE_WITH_CC(CUART,"Succesfully send the RDP status");
 		break;
-		
+
+	case BL_GO_TO_ADDR_CC:
+		LOG_MESSAGE_WITH_CC(CUART,"Bootloader GO TO ADDR processing started");
+		send_the_data(ACK);
+		send_the_data((UINT8)1);
+		UINT32 *go_to_address = (UINT32*)((payload_data[2] | payload_data[3] << 8 | payload_data[4] << 16 | payload_data[5] << 24 | 1));
+		if(verify_address(go_to_address) == ADDRESS_INVALID){
+			LOG_MESSAGE_WITH_CC(CUART,"Address is invalid so we send NACK");
+			send_the_data(NACK);
+			send_the_data((UINT8)1);
+			send_the_data(DATA_IMPROPER);
+			break;
+		}
+		else{
+			LOG_MESSAGE_WITH_CC(CUART,"Address is valid so we send ACK");
+			send_the_data(ACK);
+			send_the_data((UINT8)1);
+			send_the_data(ADDRESS_VALID);
+		}
+		void (*jump_to_address) (void) = (void (*)(void))(go_to_address);
+		jump_to_address();
+		break;
+	
 	default:
 		LOG_MESSAGE(CUART, "Command code is incorrect so we send NACK");
 		send_the_data(NACK);
@@ -134,3 +159,19 @@ static UINT8 get_the_rdp_status(void){
 
 	return rdp_status;
 }
+
+static UINT8 verify_address(UINT32 *go_to_address){
+
+	LOG_MESSAGE_WITH_CC(CUART,"Verifying the address : 0x%x",go_to_address);
+	if(go_to_address >= (UINT32*)SRAM1_BASE && go_to_address <= (UINT32*)SRAM1_END) return ADDRESS_VALID;
+	else if(go_to_address >= (UINT32*)SRAM2_BASE && go_to_address <= (UINT32*)SRAM2_END) return ADDRESS_VALID;
+	else if(go_to_address >= (UINT32*)FLASH_BASE && go_to_address <= (UINT32*)FLASH_END) return ADDRESS_VALID;
+	else return ADDRESS_INVALID;
+}
+
+__attribute__((section(".my_function")))
+static void dummy_function(void){
+	LOG_MESSAGE_WITH_CC(CUART,"Dummy function is called");
+	return;
+}
+

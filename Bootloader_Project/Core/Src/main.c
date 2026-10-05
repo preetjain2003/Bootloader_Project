@@ -328,6 +328,7 @@ static void bootloader_execute_command(void)
   UINT8 *received_data = Blcommandread();
   UINT32 length_of_command = received_data[0] + 1;
   print_the_payload(received_data, length_of_command);
+  LOG_MESSAGE(CUART, "Length of command : %d", length_of_command);
   if (check_checksum(received_data, length_of_command))
   {
     LOG_MESSAGE(CUART, "Checksum failed");
