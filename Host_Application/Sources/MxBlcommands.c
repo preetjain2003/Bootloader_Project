@@ -10,6 +10,7 @@ UINT32 crc;
 void processing_the_command(UINT32 command)
 {
      __attribute__((unused)) char c;
+     unsigned int sector_number = 0, number_of_sectors = 0;
 
     // Decrment by 1 because we compare with all value which
     // start form 0 indexing
@@ -171,7 +172,7 @@ void processing_the_command(UINT32 command)
 
     case BL_GO_TO_ADDR:
         while ((c = getchar()) != '\n' && c != EOF);
-        printf("Write the valide address to the device: ");
+        printf("Write the valid address to the device: ");
         UINT32 address = 0;
         scanf("0x%lx", &address);
         printf("Address entered is : 0x%lx \n", address);
@@ -205,6 +206,44 @@ void processing_the_command(UINT32 command)
 
         printf("Waiting for the reply from the device \n");
         reply_processing(BL_GO_TO_ADDR);
+        break;
+
+    case BL_FLASH_ERASE:
+        
+        /*Read the sector no and no of sectors*/
+        printf("Enter the initial sector number to erase : ");
+        scanf("%u",&sector_number);
+        printf("Enter the number of sectors to erase : ");
+        scanf("%u",&number_of_sectors);
+
+        /* Assign the value to the data_packed */
+        data_packed[0] = BL_FLASH_ERASE_LEN - 1;
+        data_packed[1] = BL_FLASH_ERASE_CC;
+        data_packed[2] = sector_number;
+        data_packed[3] = number_of_sectors;
+
+        /*Calculate the crc of that*/
+        crc = crc_calculate(data_packed,4);
+
+        /*Convert word to byte and put in the data_packed*/
+        for(int i=0;i<4;i++) data_packed[4+i] = convet_word_to_byte(crc,i);
+         printf("Added the CRC to the data packed \n");
+
+        /*Send the data packed to serial port*/
+        if (!write_data(data_packed, BL_FLASH_ERASE_LEN))
+        {
+            printf("Succesfully sending the command \n");
+        }
+
+        else
+        {
+            printf("Failed to send the command \n");
+            return;
+        }
+
+        printf("Waiting for the reply from the device \n");
+        reply_processing(BL_FLASH_ERASE);
+
         break;
     }
 }
