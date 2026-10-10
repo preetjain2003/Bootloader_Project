@@ -136,7 +136,7 @@ int write_data(UINT8 *data_write, UINT8 length)
 
             printf(" 0x%2.2x", data_write[i]);
 
-            if (i % 8 == 0)
+            if (i % 8 == 0 && i != 0)
                 printf("\n");
         }
 

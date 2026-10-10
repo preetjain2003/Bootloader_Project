@@ -25,6 +25,7 @@ static UINT8 get_the_rdp_status(void);
 static UINT8 verify_address(UINT32 *go_to_address);
 static UINT8 get_the_rdp_status(void);
 static UINT8 flash_erase_sector(UINT8 sectorNo, UINT8 noofsector);
+static UINT8 write_into_flash(UINT8 *address, UINT8 *value, UINT8 size);
 static void dummy_function(void);
 
 UINT8 *Blcommandread(void)
@@ -140,6 +141,23 @@ void BLReplyProcessing(UINT8 *payload_data, UINT8 length)
 		send_the_data(VALID);
 		break;
 
+	case BL_MEM_WRITE_CC:
+		LOG_MESSAGE_WITH_CC(CUART,"Memory write processing started");
+		send_the_data(ACK);
+		send_the_data((UINT8)1);
+
+		UINT32 *address = (payload_data[2] | payload_data[3] << 8 | payload_data[4] << 16 | payload_data[5] << 24);
+		LOG_MESSAGE_WITH_CC(CUART,"Address where we have to write : 0x%x",address);
+
+		/*Here we  pass the initial address where we have to put and then address and total no of elemenets*/
+		if(write_into_flash(address,&payload_data[7],payload_data[6]) != 0){
+			LOG_MESSAGE_WITH_CC(CUART,"Memory write fail");
+			send_the_data(INVALID);	
+		}
+		LOG_MESSAGE_WITH_CC(CUART,"Succesfully write to memory");
+		send_the_data(VALID);
+
+		break;
 	default:
 		LOG_MESSAGE(CUART, "Command code is incorrect so we send NACK");
 		send_the_data(NACK);
@@ -188,7 +206,7 @@ static UINT8 flash_erase(UINT8 sector)
 		LOG_MESSAGE_WITH_CC(CUART, "Incorrect sector : %d are their", sector);
 		return 1;
 	}
-	
+
 	FLASH_INTERFACE *pflashinterface = (FLASH_INTERFACE *)0x40023C00;
 
 	/*Unlock the flash interface register*/
@@ -238,6 +256,44 @@ static UINT8 flash_erase_sector(UINT8 sectorNo, UINT8 noofsector){
 	/*return success*/
 	return 0;
 }
+
+static UINT8 write_into_flash(UINT8 *address, UINT8 *value, UINT8 size)
+{
+
+	/*Verify the address*/
+	if (verify_address(address) == ADDRESS_INVALID)
+		return INVALID;
+
+	FLASH_INTERFACE *pflashinterface = (FLASH_INTERFACE *)0x40023C00;
+
+	for (UINT8 i = 0; i < size; i++)
+	{
+
+		/*Unlock if FLASH_CR is lock*/
+		if (pflashinterface->FLASH_CR & (1 << 31))
+		{
+			pflashinterface->FLASH_KEYR = 0x45670123;
+			pflashinterface->FLASH_KEYR = 0xCDEF89AB;
+		}
+
+		/*Wait for the busy bit to cleared*/
+		while (pflashinterface->FLASH_SR & (1 << 16))
+			;
+
+		/*Set the programming bit*/
+		pflashinterface->FLASH_CR |= (1 << 0);
+
+		/*Programm the correspondig address*/
+		address[i] = value[i];
+
+		/*Wait for the busy bit to cleared*/
+		while (pflashinterface->FLASH_SR & (1 << 16))
+			;
+	}
+	/*return success*/
+	return 0;
+}
+
 static UINT8 verify_address(UINT32 *go_to_address)
 {
 

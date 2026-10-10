@@ -91,7 +91,13 @@ void reply_processing(UINT8 command)
         if(status_command != 1) printf("Flash erase not happen \n");
         else printf("flash erase happen succesfully \n");
         break;
-    
+
+    case BL_MEM_WRITE:
+        status_command = data_packed[0];
+        
+        if(status_command != 1) printf("Memory write not happen \n");
+        else printf("Memory write happen succesfully \n");
+        break;
     }
 
 }
