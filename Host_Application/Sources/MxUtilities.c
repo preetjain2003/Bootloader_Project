@@ -10,6 +10,42 @@ UINT8 convet_word_to_byte(UINT32 data, UINT8 index){
     return byte_data;   
 }
 
+long bin_to_array(UINT8 *value){
+
+    UINT32 size;
+
+    FILE *fptr = fopen("D:\\Bootloader Project\\Host_Application\\bin\\firmware.bin", "rb");
+
+    if (fptr == NULL)
+    {
+        printf("Error : could not open file \n");
+        return -1;
+    }
+
+    if (fseek(fptr, 0, SEEK_END) != 0)
+    {
+        printf("Error : fseek end failed \n");
+        fclose(fptr);
+        return -1;
+    }
+
+    size = ftell(fptr);
+
+    /*Move again to initial position*/
+    if (fseek(fptr, 0, SEEK_SET) != 0)
+    {
+        printf("Error : fseek set failed \n");
+        fclose(fptr);
+        return -1;
+    }
+
+    fread(value,sizeof(UINT8),size,fptr);
+
+    fclose(fptr);
+
+    return size;
+}
+
 UINT32 crc_accumulate(UINT32 input_data, UINT32 initial_crc){
 
     UINT32 bindex = 0;

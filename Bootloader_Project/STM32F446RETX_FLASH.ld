@@ -184,4 +184,9 @@ SECTIONS
   }
 
   .ARM.attributes 0 : { *(.ARM.attributes) }
+
+  .my_function 0x08040000 :
+  {
+    KEEP(*(.my_function))
+  } >FLASH
 }
