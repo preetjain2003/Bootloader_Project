@@ -25,6 +25,7 @@ int main()
         printf("\n BL_OTP_READ -> 11 \n");
         printf("\n BL_DIS_R_W_PROTECT -> 12 \n");
         printf("\n Exit -> 13 \n");
+        printf("\n Restart Serial Port -> 14 \n");
 
         printf("\n Enter the commands : ");
         scanf("%lu",&command);
@@ -32,6 +33,13 @@ int main()
         if(command == 13){
             printf("Exit from the host \n");
             exit(1);
+        }
+
+        if(command == 14){
+            printf("Restarting the serial port \n");
+            close_serial_communication();
+            serial_port_configuration(COMM_PORT);
+            continue;
         }
 
         printf("Processing the command : %lu \n",command);
