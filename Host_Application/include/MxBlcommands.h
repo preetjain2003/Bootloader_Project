@@ -63,6 +63,7 @@ enum{
 
 /*Total byte we write in memory write at once*/
 #define TOTAL_MEM_WRITE (50 - BL_MEM_READ_LEN + 1)
+#define MAX_READ_SIZE 40
 
 
 void processing_the_command(UINT32 command);

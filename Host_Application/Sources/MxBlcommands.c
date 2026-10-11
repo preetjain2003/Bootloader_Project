@@ -7,16 +7,17 @@
 
 UINT8 data_packed[MAX_COMMAND_LENGTH];
 UINT32 crc;
+UINT32 address = 0;
 
 void processing_the_command(UINT32 command)
 {
     __attribute__((unused)) char c;
     unsigned int sector_number = 0, number_of_sectors = 0;
-    UINT32 address = 0;
     UINT8 size = 0;
     long size_of_bin = 0;
     UINT8 data_buffer[MAX_BIN_SIZE] = {0};
     UINT8 total_iteration = 0;
+    
 
     // Decrment by 1 because we compare with all value which
     // start form 0 indexing
@@ -321,8 +322,65 @@ void processing_the_command(UINT32 command)
 
         /*Delay*/
         sleep(2);
-        
     }
+        break;
+
+    case BL_MEM_READ:
+        while ((c = getchar()) != '\n' && c != EOF) ;
+        // printf("Enter the address to read from : ");
+        // scanf("0x%lx", &address);
+        // UINT32 size_to_read = 0;
+        // printf("Enter the size to read : ");
+        // scanf("%lu", &size_to_read);
+
+        address = 0x08008000; // Default address for reading, can be modified as needed
+        printf("Memory address entered is : 0x%lx \n", address);
+
+        UINT32 size_to_read = 255;
+        printf("Size to read is : %lu \n", size_to_read);
+
+
+        UINT8 total_iteration = (size_to_read / MAX_READ_SIZE) + 1;
+
+        for(UINT8 i=0;i<total_iteration;i++){
+        
+        if(size_to_read > MAX_READ_SIZE) size = MAX_READ_SIZE;
+        else size = size_to_read;
+
+        /*Reduce the read size from size_to_read*/
+        size_to_read -= size;
+
+        /* Assign the value to the data_packed */
+        data_packed[0] = BL_MEM_READ_LEN - 1;
+        data_packed[1] = BL_MEM_READ_CC;
+        for (int i = 0; i < 4; i++) {
+            data_packed[2 + i] = convet_word_to_byte(address, i);
+        }
+        data_packed[6] = size;
+        
+        /*Calculate the CRC*/
+        crc = crc_calculate(data_packed, 7);
+        for (int i = 0; i < 4; i++) {
+            data_packed[7 + i] = convet_word_to_byte(crc, i);
+        }
+
+        /*Send the data packed to serial port*/
+        if (!write_data(data_packed, BL_MEM_READ_LEN))
+        {
+            printf("Succesfully sending the command \n");
+        }
+        else
+        {
+            printf("Failed to send the command \n");
+            return;
+        }  
+        reply_processing(BL_MEM_READ);
+
+
+        /*Update the address*/
+        address += (size+1);
+    }
+        break;
     }
 }
 

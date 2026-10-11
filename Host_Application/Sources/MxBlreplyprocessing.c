@@ -3,6 +3,7 @@
 #include "MxWindows_serial_port.h"
 
 UINT8 data_packed[MAX_COMMAND_LENGTH];
+extern UINT32 address;
 
 static int read_the_len_and_status(void);
 
@@ -98,6 +99,30 @@ void reply_processing(UINT8 command)
         if(status_command != 1) printf("Memory write not happen \n");
         else printf("Memory write happen succesfully \n");
         break;
+
+    case BL_MEM_READ:
+        status_command = data_packed[0];
+
+        /*This status command is denote that it initially it 
+        send the length so how much length is send*/
+        if(status_command == 0) printf("Memory read not happen because address is incorrect\n");
+        else{
+            printf("Memory read happen succesfully and length is %d \n", status_command);
+            /*First read the length and then read the value*/
+            UINT8 len;
+            read_data(&len,1);
+            printf("Length to read is %d \n", len);
+            UINT8 data_buffer[len];
+            read_data(data_buffer,len);
+            printf("=====================Memory table=================================");
+            for(int i=0; i<=len; i++)
+            {   
+                if(i%16 == 0) printf("\n[0x%lx]",address+i);
+                printf(" 0x%x",data_buffer[i]);                
+            }
+        }
+        break;
+    
     }
 
 }
@@ -111,6 +136,8 @@ static INT read_the_len_and_status()
     {
         printf("Read Failed ! \n");
     }
+
+    printf("Status recived from bootloader : %d \n",status_read[0]);
 
     if (status_read[0] == NACK)
     {
