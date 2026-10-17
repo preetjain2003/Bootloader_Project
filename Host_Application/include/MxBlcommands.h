@@ -66,6 +66,8 @@ enum{
 #define MAX_READ_SIZE 40
 
 
+#define NO_PROPER_PROTECTION_LEVEL 2
+
 void processing_the_command(UINT32 command);
 
 #endif // MX_BL_COMMANDS_H

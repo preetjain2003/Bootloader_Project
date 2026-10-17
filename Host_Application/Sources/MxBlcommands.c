@@ -4,7 +4,6 @@
 #include <MxUtilities.h>
 #include <MxBlreplyprocessing.h>
 
-
 UINT8 data_packed[MAX_COMMAND_LENGTH];
 UINT32 crc;
 UINT32 address = 0;
@@ -17,7 +16,6 @@ void processing_the_command(UINT32 command)
     long size_of_bin = 0;
     UINT8 data_buffer[MAX_BIN_SIZE] = {0};
     UINT8 total_iteration = 0;
-    
 
     // Decrment by 1 because we compare with all value which
     // start form 0 indexing
@@ -177,7 +175,8 @@ void processing_the_command(UINT32 command)
         break;
 
     case BL_GO_TO_ADDR:
-        while ((c = getchar()) != '\n' && c != EOF) ;
+        while ((c = getchar()) != '\n' && c != EOF)
+            ;
         printf("Write the valid address to the device: ");
         scanf("0x%lx", &address);
         printf("Address entered is : 0x%lx \n", address);
@@ -255,8 +254,9 @@ void processing_the_command(UINT32 command)
         break;
 
     case BL_MEM_WRITE:
-        while ((c = getchar()) != '\n' && c != EOF) ;
-        
+        while ((c = getchar()) != '\n' && c != EOF)
+            ;
+
         address = 0x08008000; // Default address for writing, can be modified as needed
 
         printf("Memory address entered is : 0x%lx \n", address);
@@ -272,61 +272,65 @@ void processing_the_command(UINT32 command)
 
         /*When size of bin > TOTAL_MEM_WRITE*/
         total_iteration = (size_of_bin / TOTAL_MEM_WRITE) + 1;
-        printf("Total iteration : %d \n",total_iteration);
-        for(int j=0; j<total_iteration && size_of_bin != 0; j++){
-
-        /*Calcuate the size to send*/
-        size = (size_of_bin > TOTAL_MEM_WRITE)?TOTAL_MEM_WRITE:size_of_bin;
-        size_of_bin -= size;
-        printf("Iteration : %d Size of payload : %d \n",j,size);
-
-        /* Assign the value to the data_packed */
-        data_packed[0] = BL_MEM_WRITE_LEN + size - 1;
-        data_packed[1] = BL_MEM_WRITE_CC;
-
-        /*Convert the address to byte*/
-        for (int i = 0; i < 4; i++) data_packed[2 + i] = convet_word_to_byte(address, i);
-
-        /*Assign the size to that*/
-        data_packed[6] = size;
-
-        /*Assign the value to the payload*/
-        for (int i=0; i<size; i++) data_packed[7+i] = data_buffer[j*TOTAL_MEM_WRITE + i];
-
-        /*Calculate the crc of that*/
-        /*We use -3 because already the data_packed[0] length are 1 byte small*/
-        crc = crc_calculate(data_packed, data_packed[0] - 3);
-
-        /*Assign the crc value to the data packed*/
-        for (int i = 3; i >= 0; i--) data_packed[data_packed[0] - i] = convet_word_to_byte(crc, 3 - i);
-        printf("Added the CRC to the data packed \n");
-
-        /*Send the data packed to serial port*/
-        if (!write_data(data_packed, data_packed[0] + 1))
+        printf("Total iteration : %d \n", total_iteration);
+        for (int j = 0; j < total_iteration && size_of_bin != 0; j++)
         {
-            printf("Iteration : %d  Sucessfully send the command \n",j);
+
+            /*Calcuate the size to send*/
+            size = (size_of_bin > TOTAL_MEM_WRITE) ? TOTAL_MEM_WRITE : size_of_bin;
+            size_of_bin -= size;
+            printf("Iteration : %d Size of payload : %d \n", j, size);
+
+            /* Assign the value to the data_packed */
+            data_packed[0] = BL_MEM_WRITE_LEN + size - 1;
+            data_packed[1] = BL_MEM_WRITE_CC;
+
+            /*Convert the address to byte*/
+            for (int i = 0; i < 4; i++)
+                data_packed[2 + i] = convet_word_to_byte(address, i);
+
+            /*Assign the size to that*/
+            data_packed[6] = size;
+
+            /*Assign the value to the payload*/
+            for (int i = 0; i < size; i++)
+                data_packed[7 + i] = data_buffer[j * TOTAL_MEM_WRITE + i];
+
+            /*Calculate the crc of that*/
+            /*We use -3 because already the data_packed[0] length are 1 byte small*/
+            crc = crc_calculate(data_packed, data_packed[0] - 3);
+
+            /*Assign the crc value to the data packed*/
+            for (int i = 3; i >= 0; i--)
+                data_packed[data_packed[0] - i] = convet_word_to_byte(crc, 3 - i);
+            printf("Added the CRC to the data packed \n");
+
+            /*Send the data packed to serial port*/
+            if (!write_data(data_packed, data_packed[0] + 1))
+            {
+                printf("Iteration : %d  Sucessfully send the command \n", j);
+            }
+
+            else
+            {
+                printf("Failed to send the command \n");
+                return;
+            }
+
+            printf("Waiting for the reply from the device \n");
+            reply_processing(BL_MEM_WRITE);
+
+            /*Increment the address*/
+            address += size;
+
+            /*Delay*/
+            sleep(2);
         }
-
-        else
-        {
-            printf("Failed to send the command \n");
-            return;
-        }
-        
-        printf("Waiting for the reply from the device \n");
-        reply_processing(BL_MEM_WRITE);
-
-        /*Increment the address*/
-        address += size;
-
-
-        /*Delay*/
-        sleep(2);
-    }
         break;
 
     case BL_MEM_READ:
-        while ((c = getchar()) != '\n' && c != EOF) ;
+        while ((c = getchar()) != '\n' && c != EOF)
+            ;
         // printf("Enter the address to read from : ");
         // scanf("0x%lx", &address);
         // UINT32 size_to_read = 0;
@@ -339,33 +343,77 @@ void processing_the_command(UINT32 command)
         UINT32 size_to_read = 255;
         printf("Size to read is : %lu \n", size_to_read);
 
-
         UINT8 total_iteration = (size_to_read / MAX_READ_SIZE) + 1;
 
-        for(UINT8 i=0;i<total_iteration;i++){
-        
-        if(size_to_read > MAX_READ_SIZE) size = MAX_READ_SIZE;
-        else size = size_to_read;
+        for (UINT8 i = 0; i < total_iteration; i++)
+        {
 
-        /*Reduce the read size from size_to_read*/
-        size_to_read -= size;
+            if (size_to_read > MAX_READ_SIZE)
+                size = MAX_READ_SIZE;
+            else
+                size = size_to_read;
+
+            /*Reduce the read size from size_to_read*/
+            size_to_read -= size;
+
+            /* Assign the value to the data_packed */
+            data_packed[0] = BL_MEM_READ_LEN - 1;
+            data_packed[1] = BL_MEM_READ_CC;
+            for (int i = 0; i < 4; i++)
+            {
+                data_packed[2 + i] = convet_word_to_byte(address, i);
+            }
+            data_packed[6] = size;
+
+            /*Calculate the CRC*/
+            crc = crc_calculate(data_packed, 7);
+            for (int i = 0; i < 4; i++)
+            {
+                data_packed[7 + i] = convet_word_to_byte(crc, i);
+            }
+
+            /*Send the data packed to serial port*/
+            if (!write_data(data_packed, BL_MEM_READ_LEN))
+            {
+                printf("Succesfully sending the command \n");
+            }
+            else
+            {
+                printf("Failed to send the command \n");
+                return;
+            }
+            reply_processing(BL_MEM_READ);
+
+            /*Update the address*/
+            address += (size + 1);
+        }
+        break;
+
+    case BL_EN_R_W_PROTECT:
+        while ((c = getchar()) != '\n' && c != EOF)
+            ;
+
+        /*Create 2 dummy testcase variable*/
+        UINT8 sector = 0b11100000;
+        UINT8 protection_level = 2;
 
         /* Assign the value to the data_packed */
-        data_packed[0] = BL_MEM_READ_LEN - 1;
-        data_packed[1] = BL_MEM_READ_CC;
-        for (int i = 0; i < 4; i++) {
-            data_packed[2 + i] = convet_word_to_byte(address, i);
-        }
-        data_packed[6] = size;
-        
+        data_packed[0] = BL_EN_R_W_PROTECT_LEN - 1;
+        data_packed[1] = BL_EN_R_W_PROTECT_CC;
+        data_packed[2] = sector;
+        data_packed[3] = protection_level;
+
         /*Calculate the CRC*/
-        crc = crc_calculate(data_packed, 7);
-        for (int i = 0; i < 4; i++) {
-            data_packed[7 + i] = convet_word_to_byte(crc, i);
+        crc = crc_calculate(data_packed, 4);
+
+        /*Assign the value to the data packed*/
+        for (int i = 0; i < 4; i++)
+        {
+            data_packed[4 + i] = convet_word_to_byte(crc, i);
         }
 
         /*Send the data packed to serial port*/
-        if (!write_data(data_packed, BL_MEM_READ_LEN))
+        if (!write_data(data_packed, BL_EN_R_W_PROTECT_LEN))
         {
             printf("Succesfully sending the command \n");
         }
@@ -373,13 +421,42 @@ void processing_the_command(UINT32 command)
         {
             printf("Failed to send the command \n");
             return;
-        }  
-        reply_processing(BL_MEM_READ);
+        }
 
+        reply_processing(BL_EN_R_W_PROTECT);
 
-        /*Update the address*/
-        address += (size+1);
-    }
+        break;
+
+    case BL_READ_SECTOR_STATUS:
+        while ((c = getchar()) != '\n' && c != EOF)
+            ;
+
+        /* Assign the value to the data_packed */
+        data_packed[0] = BL_READ_SECTOR_STATUS_LEN - 1;
+        data_packed[1] = BL_READ_SECTOR_STATUS_CC;
+
+        /*Calculate the CRC*/
+        crc = crc_calculate(data_packed, 2);
+
+        /*Assign the value to the data packed*/
+        for (int i = 0; i < 4; i++)
+        {
+            data_packed[2 + i] = convet_word_to_byte(crc, i);
+        }
+
+        /*Send the data packed to serial port*/
+        if (!write_data(data_packed, BL_READ_SECTOR_STATUS_LEN))
+        {
+            printf("Succesfully sending the command \n");
+        }
+        else
+        {
+            printf("Failed to send the command \n");
+            return;
+        }
+
+        reply_processing(BL_READ_SECTOR_STATUS);
+
         break;
     }
 }

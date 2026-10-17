@@ -26,6 +26,8 @@ static UINT8 verify_address(UINT32 *go_to_address);
 static UINT8 get_the_rdp_status(void);
 static UINT8 flash_erase_sector(UINT8 sectorNo, UINT8 noofsector);
 static UINT8 write_into_flash(UINT8 *address, UINT8 *value, UINT8 size);
+static UINT8 set_r_w_protection(UINT8 sector,UINT8 protection);
+static void read_r_w_protection_status(UINT8 *data);
 static void dummy_function(void);
 
 UINT8 *Blcommandread(void)
@@ -61,6 +63,10 @@ void BLReplyProcessing(UINT8 *payload_data, UINT8 length)
 	current_command_processing -= 0x51;
 
 	UINT32 ret = 0;
+	/*For Setting the sector Read/Write Protection*/
+	UINT32 *ptr = 0x1FFFC008;
+
+	UINT32 temp;
 
 	switch (payload_data[1])
 	{
@@ -161,8 +167,9 @@ void BLReplyProcessing(UINT8 *payload_data, UINT8 length)
 
 		break;
 
-	case BL_MEM_READ_CC:{ //To avoid the redeclaration error cause by UINT32 *address
-		LOG_MESSAGE_WITH_CC(CUART,"Memory read processing started");
+	case BL_MEM_READ_CC:
+	{ // To avoid the redeclaration error cause by UINT32 *address
+		LOG_MESSAGE_WITH_CC(CUART, "Memory read processing started");
 		send_the_data(ACK);
 		send_the_data((UINT8)1);
 
@@ -172,18 +179,44 @@ void BLReplyProcessing(UINT8 *payload_data, UINT8 length)
 		UINT8 total_length = payload_data[6];
 		LOG_MESSAGE_WITH_CC(CUART, "Total length of data to read : %d", total_length);
 
-		if(verify_address(address1) != ADDRESS_VALID){
-			LOG_MESSAGE_WITH_CC(CUART,"Address are invalid");
+		if (verify_address(address1) != ADDRESS_VALID)
+		{
+			LOG_MESSAGE_WITH_CC(CUART, "Address are invalid");
 			send_the_data(ADDRESS_INVALID);
 		}
 
-		send_the_data(ADDRESS_VALID);	
+		send_the_data(ADDRESS_VALID);
 		send_the_data(total_length);
-		for(UINT8 i=0;i<=total_length;i++){
-		send_the_data(address1[i]);
+		for (UINT8 i = 0; i <= total_length; i++)
+		{
+			send_the_data(address1[i]);
 		}
 		break;
 	}
+
+	case BL_EN_R_W_PROTECT_CC:
+		LOG_MESSAGE_WITH_CC(CUART, "BL_EN_R_W_PROTECT processing started");
+		send_the_data(ACK);
+		send_the_data(1);
+
+		/*Note : Here we always do all this protection on the sector other than 0*/
+		UINT8 sector_detail = payload_data[2];
+		UINT8 protection_mode = payload_data[3];
+
+		set_r_w_protection(sector_detail,protection_mode);
+
+		send_the_data(VALID);
+		break;
+
+	case BL_READ_SECTOR_STATUS_CC:
+		LOG_MESSAGE_WITH_CC(CUART, "BL_READ_SECTOR_STATUS processing started");
+		send_the_data(ACK);
+		send_the_data(2);
+
+		UINT8 data[2] = {0}; /*Give the default value no permisson(00)*/
+		read_r_w_protection_status(&data);
+		send_the_array(data, 2);
+		break;
 
 	default:
 		LOG_MESSAGE(CUART, "Command code is incorrect so we send NACK");
@@ -339,6 +372,119 @@ static UINT8 verify_address(UINT32 *go_to_address)
 		return ADDRESS_VALID;
 	else
 		return ADDRESS_INVALID;
+}
+
+static UINT8 set_r_w_protection(UINT8 sector,UINT8 protection){
+
+
+	/*Check lock and unlock the FLASH_OPTCR*/
+	LOG_MESSAGE_WITH_CC(CUART, "Configuring flash sector protection: sector=0x%02X, protection_mode=%d", sector, protection);
+	FLASH_INTERFACE *pFlash_interface = 0x40023C00;
+
+	if(pFlash_interface -> FLASH_OPTCR & 0x01){
+		LOG_MESSAGE_WITH_CC(CUART, "FLASH_OPTCR was locked; unlocking option bytes before sector protection update");
+		pFlash_interface -> FLASH_OPTKEYR = 0x08192A3B;
+		pFlash_interface -> FLASH_OPTKEYR = 0x4C5D6E7F;
+	}
+	else{
+		LOG_MESSAGE_WITH_CC(CUART, "FLASH_OPTCR already unlocked; proceeding with sector protection update");
+	}
+
+	/*Waiting for  the busy bit to cleared*/
+	while (pFlash_interface -> FLASH_SR & (1 << 16));
+	
+	UINT8 temp = 0;
+
+	if(protection == 1){
+		/*PCROP disabled, nWPRi bits used for Write Protection on sector i*/
+		pFlash_interface -> FLASH_OPTCR &=~ (1 << 31);
+		temp = 0xFF;
+		LOG_MESSAGE_WITH_CC(CUART,"Succesfully disable the SPRMOD bit for write section");
+	}
+
+	else if(protection == 2){
+		/* PCROP enabled, nWPRi bits used for PCROP Protection on sector i*/
+		pFlash_interface -> FLASH_OPTCR |= (1 << 31);
+		temp = 0x00;
+		LOG_MESSAGE_WITH_CC(CUART,"Succesfully enable the SPRMOD bit for read/write section");
+	}
+
+	else{
+		/*No Protection we have to give*/
+		pFlash_interface -> FLASH_OPTCR &=~ (1 << 31);
+		temp = 0xFF;
+		LOG_MESSAGE_WITH_CC(CUART,"Succefully disable the read and write protection on every sector");
+	}
+
+	for(UINT8 i=0;i<TOTAL_SECTOR;i++){
+
+		if(protection == 1 && (sector >> i & 0x01)){
+			temp &=~ (1 << i);
+		}
+		else if (protection == 2 && (sector >> i & 0x01)){
+			temp |= (1 << i);
+		}
+	}
+
+	/*Assign to the nWRP bit*/
+	pFlash_interface -> FLASH_OPTCR &=~ (0xFF << 16);
+	pFlash_interface -> FLASH_OPTCR |= (temp << 16);
+
+
+	/*Select the Desired start bit*/
+	pFlash_interface -> FLASH_OPTCR |= (1 << 1);
+
+	/*Waiting for the busy bit to cleared*/
+	while (pFlash_interface -> FLASH_SR & (1 << 16));
+}
+
+static void read_r_w_protection_status(UINT8 *data){
+	LOG_MESSAGE_WITH_CC(CUART,"Read r_w protection status started succcesfully");
+	
+	// FLASH_INTERFACE *pReadInterface = (FLASH_INTERFACE *)0x40023C00;
+
+	// /*Initialize to no protection*/
+	// data[0] = data[1] = 0x00;
+
+	// LOG_MESSAGE_WITH_CC(CUART,"[before for loop]Read r_w protection status : FLASH_OPTCR = 0x%08X", pReadInterface -> FLASH_OPTCR);
+
+	// for(UINT8 i=0;i<TOTAL_SECTOR;i++){
+
+	// 	/*R/W Protection*/
+	// 	if((pReadInterface -> FLASH_OPTCR & (1 << 31)) && (pReadInterface -> FLASH_OPTCR & (1 << (8 + i)))){
+	// 		LOG_MESSAGE_WITH_CC(CUART,"Sector %d is Read/Write protected", i);
+	// 		data[i/4] |= (2 << ((i%4)*2)); 
+	// 	}
+	// 	else if((!(pReadInterface -> FLASH_OPTCR & (1 << 31))) && (!(pReadInterface -> FLASH_OPTCR & (1 << (8 + i))))){
+	// 		LOG_MESSAGE_WITH_CC(CUART,"Sector %d is write protected", i);
+	// 		data[i/4] |= (1 << ((i%4)*2));
+	// 	}
+	// }
+
+	// LOG_MESSAGE_WITH_CC(CUART,"[After for loop]Read r_w protection status : data[0] = 0x%02X, data[1] = 0x%02X", data[0], data[1]);
+
+	UINT32 *pReadInterface = (UINT32 *)0x1FFFC008;
+
+	/*Initialize to no protection*/
+	data[0] = data[1] = 0x00;
+
+	LOG_MESSAGE_WITH_CC(CUART,"[before for loop]Read r_w protection status : FLASH_OPTCR = 0x%08X", pReadInterface);
+
+	for(UINT8 i=0;i<TOTAL_SECTOR;i++){
+
+		/*R/W Protection*/
+		if((*pReadInterface & (1 << 15)) && (*pReadInterface & (1 << (i)))){
+			LOG_MESSAGE_WITH_CC(CUART,"Sector %d is Read/Write protected", i);
+			data[i/4] |= (2 << ((i%4)*2)); 
+		}
+		else if((!(*pReadInterface & (1 << 15))) && (!(*pReadInterface  & (1 << (i))))){
+			LOG_MESSAGE_WITH_CC(CUART,"Sector %d is write protected", i);
+			data[i/4] |= (1 << ((i%4)*2));
+		}
+	}
+
+	LOG_MESSAGE_WITH_CC(CUART,"[After for loop]Read r_w protection status : data[0] = 0x%02X, data[1] = 0x%02X", data[0], data[1]);
+
 }
 
 __attribute__((section(".my_function"))) static void dummy_function(void)

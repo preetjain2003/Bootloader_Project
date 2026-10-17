@@ -15,10 +15,9 @@ void reply_processing(UINT8 command)
     UINT8 RDP_status;
     UINT8 status_command;
 
-
     if (command >= TOTAL_COMMAND_SUPPORTED)
     {
-        printf("Invalid command for processing: %d \n",command);
+        printf("Invalid command for processing: %d \n", command);
         return;
     }
 
@@ -78,53 +77,92 @@ void reply_processing(UINT8 command)
         else
             printf(" read protection of memories (debug features limited) \n");
         break;
-    
+
     case BL_GO_TO_ADDR:
         status_command = data_packed[0];
 
-        if(status_command != 1) printf("Address is Invalid \n");
-        else printf("Address is Valid \n");
+        if (status_command != 1)
+            printf("Address is Invalid \n");
+        else
+            printf("Address is Valid \n");
         break;
-    
+
     case BL_FLASH_ERASE:
         status_command = data_packed[0];
 
-        if(status_command != 1) printf("Flash erase not happen \n");
-        else printf("flash erase happen succesfully \n");
+        if (status_command != 1)
+            printf("Flash erase not happen \n");
+        else
+            printf("flash erase happen succesfully \n");
         break;
 
     case BL_MEM_WRITE:
         status_command = data_packed[0];
-        
-        if(status_command != 1) printf("Memory write not happen \n");
-        else printf("Memory write happen succesfully \n");
+
+        if (status_command != 1)
+            printf("Memory write not happen \n");
+        else
+            printf("Memory write happen succesfully \n");
         break;
 
     case BL_MEM_READ:
         status_command = data_packed[0];
 
-        /*This status command is denote that it initially it 
+        /*This status command is denote that it initially it
         send the length so how much length is send*/
-        if(status_command == 0) printf("Memory read not happen because address is incorrect\n");
-        else{
+        if (status_command == 0)
+            printf("Memory read not happen because address is incorrect\n");
+        else
+        {
             printf("Memory read happen succesfully and length is %d \n", status_command);
             /*First read the length and then read the value*/
             UINT8 len;
-            read_data(&len,1);
+            read_data(&len, 1);
             printf("Length to read is %d \n", len);
             UINT8 data_buffer[len];
-            read_data(data_buffer,len);
+            read_data(data_buffer, len);
             printf("=====================Memory table=================================");
-            for(int i=0; i<=len; i++)
-            {   
-                if(i%16 == 0) printf("\n[0x%lx]",address+i);
-                printf(" 0x%x",data_buffer[i]);                
+            for (int i = 0; i <= len; i++)
+            {
+                if (i % 16 == 0)
+                    printf("\n[0x%lx]", address + i);
+                printf(" 0x%x", data_buffer[i]);
             }
         }
         break;
-    
-    }
 
+    case BL_EN_R_W_PROTECT:
+        status_command = data_packed[0];
+
+        if (status_command != 1)
+        {
+            printf("No proper protection level is set \n");
+        }
+
+        else if (status_command == 1)
+        {
+            printf("Protection level set \n");
+        }
+        break;
+
+    case BL_READ_SECTOR_STATUS:
+
+        for (UINT8 i = 0; i < 8; i++)
+        {
+            if (((data_packed[i / 4] >> (2 * (i % 4))) & 0x3) == 0)
+            {
+                printf("Sector [%d] No Protection Level \n",i);
+            }
+            else if (((data_packed[i / 4] >> (2 * (i % 4))) & 0x3) == 1)
+            {
+                printf("Sector [%d] Write Protection Level \n",i);
+            }
+            else if (((data_packed[i / 4] >> (2 * (i % 4))) & 0x3) == 2)
+            {
+                printf("Sector [%d] Read Protection Level \n",i);
+            }
+        }
+    }   
 }
 
 static INT read_the_len_and_status()
@@ -137,7 +175,7 @@ static INT read_the_len_and_status()
         printf("Read Failed ! \n");
     }
 
-    printf("Status recived from bootloader : %d \n",status_read[0]);
+    printf("Status recived from bootloader : %d \n", status_read[0]);
 
     if (status_read[0] == NACK)
     {

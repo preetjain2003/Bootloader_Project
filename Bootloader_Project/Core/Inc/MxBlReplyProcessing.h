@@ -15,6 +15,9 @@
 
 #define VALID 1
 #define INVALID 0
+#define NO_PROPER_PROTECTION_LEVEL 2
+#define SECTOR_NO_IMPROPER 3
+
 
 #define SRAM1_BASE 0x20000000
 #define SRAM1_END 0x2001BFFF
@@ -22,6 +25,8 @@
 #define SRAM2_END 0x2001FFFF
 #define FLASH_BASE 0x08000000
 #define FLASH_END 0x081FFFFF
+
+#define TOTAL_SECTOR 8
 
 typedef struct
 {

@@ -32,8 +32,8 @@ typedef enum
 extern UART_HandleTypeDef huart2;
 extern UART_HandleTypeDef huart3;
 
-#define CUART huart2
-#define DUART &huart3 /*Here we cannot use the log message just above so thats why 
+#define CUART huart3
+#define DUART &huart2 /*Here we cannot use the log message just above so thats why 
 every place use &DUART instead we write here*/
 
 #endif // MX_TYPEDEF_H

@@ -3,7 +3,7 @@
 #include<MxBlcommands.h>
 
 
-#define COMM_PORT "\\\\.\\COM20"
+#define COMM_PORT "\\\\.\\COM17"
 int main()
 {
     UINT32 command;
