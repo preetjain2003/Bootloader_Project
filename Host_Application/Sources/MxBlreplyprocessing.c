@@ -162,7 +162,25 @@ void reply_processing(UINT8 command)
                 printf("Sector [%d] Read Protection Level \n",i);
             }
         }
-    }   
+        break;
+
+    
+    case BL_DIS_R_W_PROTECT:
+        status_command = data_packed[0];
+
+        if (status_command != 1)
+        {
+            printf("Protection level not reset \n");
+        }
+
+        else if (status_command == 1)
+        {
+            printf("Protection level reset \n");
+        }
+        break;
+    }
+    
+    
 }
 
 static INT read_the_len_and_status()

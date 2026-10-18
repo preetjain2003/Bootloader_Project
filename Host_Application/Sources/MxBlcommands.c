@@ -427,7 +427,7 @@ void processing_the_command(UINT32 command)
 
         break;
 
-    case BL_READ_SECTOR_STATUS:
+            case BL_READ_SECTOR_STATUS:
         while ((c = getchar()) != '\n' && c != EOF)
             ;
 
@@ -456,6 +456,36 @@ void processing_the_command(UINT32 command)
         }
 
         reply_processing(BL_READ_SECTOR_STATUS);
+
+        break;
+
+    case BL_DIS_R_W_PROTECT:
+
+        /* Assign the value to the data_packed */
+        data_packed[0] = BL_DIS_R_W_PROTECT_LEN - 1;
+        data_packed[1] = BL_DIS_R_W_PROTECT_CC;
+
+        /*Calculate the CRC*/
+        crc = crc_calculate(data_packed, 2);
+
+        /*Assign the value to the data packed*/
+        for (int i = 0; i < 4; i++)
+        {
+            data_packed[2 + i] = convet_word_to_byte(crc, i);
+        }
+
+        /*Send the data packed to serial port*/
+        if (!write_data(data_packed, BL_DIS_R_W_PROTECT_LEN))
+        {
+            printf("Succesfully sending the command \n");
+        }
+        else
+        {
+            printf("Failed to send the command \n");
+            return;
+        }
+
+        reply_processing(BL_DIS_R_W_PROTECT);
 
         break;
     }

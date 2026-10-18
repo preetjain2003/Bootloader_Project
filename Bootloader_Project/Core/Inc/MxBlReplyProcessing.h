@@ -30,12 +30,12 @@
 
 typedef struct
 {
-    UINT32 FLASH_ACR;
-    UINT32 FLASH_KEYR;
-    UINT32 FLASH_OPTKEYR;
-    UINT32 FLASH_SR;
-    UINT32 FLASH_CR;
-    UINT32 FLASH_OPTCR;
+    volatile UINT32 FLASH_ACR;
+    volatile UINT32 FLASH_KEYR;
+    volatile UINT32 FLASH_OPTKEYR;
+    volatile UINT32 FLASH_SR;
+    volatile UINT32 FLASH_CR;
+    volatile UINT32 FLASH_OPTCR;
 }FLASH_INTERFACE;
 
 

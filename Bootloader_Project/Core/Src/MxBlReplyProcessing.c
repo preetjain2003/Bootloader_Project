@@ -28,6 +28,7 @@ static UINT8 flash_erase_sector(UINT8 sectorNo, UINT8 noofsector);
 static UINT8 write_into_flash(UINT8 *address, UINT8 *value, UINT8 size);
 static UINT8 set_r_w_protection(UINT8 sector,UINT8 protection);
 static void read_r_w_protection_status(UINT8 *data);
+static void disable_r_w_protection_status(void);
 static void dummy_function(void);
 
 UINT8 *Blcommandread(void)
@@ -218,6 +219,13 @@ void BLReplyProcessing(UINT8 *payload_data, UINT8 length)
 		send_the_array(data, 2);
 		break;
 
+	case BL_DIS_R_W_PROTECT_CC:
+		LOG_MESSAGE_WITH_CC(CUART, "BL_DIS_R_W_PROTECT processing started");
+		send_the_data(ACK);
+		send_the_data(1);
+		disable_r_w_protection_status();
+		send_the_data(VALID);
+		break;
 	default:
 		LOG_MESSAGE(CUART, "Command code is incorrect so we send NACK");
 		send_the_data(NACK);
@@ -485,6 +493,65 @@ static void read_r_w_protection_status(UINT8 *data){
 
 	LOG_MESSAGE_WITH_CC(CUART,"[After for loop]Read r_w protection status : data[0] = 0x%02X, data[1] = 0x%02X", data[0], data[1]);
 
+}
+
+static void disable_r_w_protection_status(void){
+
+	FLASH_INTERFACE *pFlash_interface = 0x40023C00;
+
+	LOG_MESSAGE_WITH_CC(CUART, "Disabling read/write protection; initial FLASH_OPTCR = 0x%08X", pFlash_interface -> FLASH_OPTCR);
+
+	if(pFlash_interface -> FLASH_OPTCR & 0x01){
+		LOG_MESSAGE_WITH_CC(CUART, "FLASH_OPTCR was locked; unlocking option bytes before sector protection update");
+		pFlash_interface -> FLASH_OPTKEYR = 0x08192A3B;
+		pFlash_interface -> FLASH_OPTKEYR = 0x4C5D6E7F;
+	}
+	else{
+		LOG_MESSAGE_WITH_CC(CUART, "FLASH_OPTCR already unlocked; proceeding with sector protection update");
+	}
+
+	LOG_MESSAGE_WITH_CC(CUART, "Waiting for FLASH_SR.BSY to clear before updating option bytes");
+	while (pFlash_interface -> FLASH_SR & (1 << 16));
+	LOG_MESSAGE_WITH_CC(CUART, "FLASH_SR.BSY cleared; FLASH_OPTCR = 0x%08X", pFlash_interface -> FLASH_OPTCR);
+
+	// /*Replace with all 0's*/
+	pFlash_interface -> FLASH_OPTCR &=~ (0xFF << 8);
+	pFlash_interface -> FLASH_OPTCR |= (0xBB << 8);
+	LOG_MESSAGE_WITH_CC(CUART, "Configured protection option bytes to 0xBB; FLASH_OPTCR = 0x%08X", pFlash_interface -> FLASH_OPTCR);
+
+	/*Select the Desired start bit*/
+	pFlash_interface -> FLASH_OPTCR |= (1 << 1);
+	LOG_MESSAGE_WITH_CC(CUART, "First option-byte update started; FLASH_OPTCR = 0x%08X", pFlash_interface -> FLASH_OPTCR);
+
+	LOG_MESSAGE_WITH_CC(CUART, "Waiting for the first option-byte update to complete");
+	while (pFlash_interface -> FLASH_SR & (1 << 16));
+	LOG_MESSAGE_WITH_CC(CUART, "First option-byte update completed; FLASH_OPTCR = 0x%08X", pFlash_interface -> FLASH_OPTCR);
+
+	// if(pFlash_interface -> FLASH_OPTCR & 0x01){
+	// 	// LOG_MESSAGE_WITH_CC(CUART, "FLASH_OPTCR was locked; unlocking option bytes before sector protection update");
+	// 	pFlash_interface -> FLASH_OPTKEYR = 0x08192A3B;
+	// 	pFlash_interface -> FLASH_OPTKEYR = 0x4C5D6E7F;
+	// }
+	// else{
+	// 	// LOG_MESSAGE_WITH_CC(CUART, "FLASH_OPTCR already unlocked; proceeding with sector protection update");
+	// }
+
+	// /*Replace approriate value of protection*/
+	// pFlash_interface -> FLASH_OPTCR &=~ (1 << 31);
+	// pFlash_interface -> FLASH_OPTCR |= (0xFF << 16);
+
+	// pFlash_interface -> FLASH_OPTCR &=~ (0xFF << 8);
+	// pFlash_interface -> FLASH_OPTCR |= (0xAA << 8);
+
+	// // LOG_MESSAGE_WITH_CC(CUART, "Prepared final read/write protection option bytes; FLASH_OPTCR = 0x%08X", pFlash_interface -> FLASH_OPTCR);
+
+	// /*Select the Desired start bit*/
+	// pFlash_interface -> FLASH_OPTCR |= (1 << 1);
+	// // LOG_MESSAGE_WITH_CC(CUART, "Final option-byte update started; FLASH_OPTCR = 0x%08X", pFlash_interface -> FLASH_OPTCR);
+
+	// // LOG_MESSAGE_WITH_CC(CUART, "Waiting for the final option-byte update to complete");
+	// while (pFlash_interface -> FLASH_SR & (1 << 16));
+	// // LOG_MESSAGE_WITH_CC(CUART, "Read/write protection update completed; FLASH_OPTCR = 0x%08X", pFlash_interface -> FLASH_OPTCR);
 }
 
 __attribute__((section(".my_function"))) static void dummy_function(void)
