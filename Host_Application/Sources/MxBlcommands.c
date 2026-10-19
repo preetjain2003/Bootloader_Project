@@ -12,10 +12,10 @@ void processing_the_command(UINT32 command)
 {
     __attribute__((unused)) char c;
     unsigned int sector_number = 0, number_of_sectors = 0;
-    UINT8 size = 0;
+    INT size = 0;
     long size_of_bin = 0;
     UINT8 data_buffer[MAX_BIN_SIZE] = {0};
-    UINT8 total_iteration = 0;
+    UINT32 total_iteration = 0;
 
     // Decrment by 1 because we compare with all value which
     // start form 0 indexing
@@ -272,14 +272,14 @@ void processing_the_command(UINT32 command)
 
         /*When size of bin > TOTAL_MEM_WRITE*/
         total_iteration = (size_of_bin / TOTAL_MEM_WRITE) + 1;
-        printf("Total iteration : %d \n", total_iteration);
-        for (int j = 0; j < total_iteration && size_of_bin != 0; j++)
+        printf("Total iteration : %lu \n", total_iteration);
+        for (UINT32 j = 0; j < total_iteration && size_of_bin != 0; j++)
         {
 
             /*Calcuate the size to send*/
             size = (size_of_bin > TOTAL_MEM_WRITE) ? TOTAL_MEM_WRITE : size_of_bin;
             size_of_bin -= size;
-            printf("Iteration : %d Size of payload : %d \n", j, size);
+            printf("Iteration : %lu Size of payload : %d \n", j, size);
 
             /* Assign the value to the data_packed */
             data_packed[0] = BL_MEM_WRITE_LEN + size - 1;
@@ -308,7 +308,7 @@ void processing_the_command(UINT32 command)
             /*Send the data packed to serial port*/
             if (!write_data(data_packed, data_packed[0] + 1))
             {
-                printf("Iteration : %d  Sucessfully send the command \n", j);
+                printf("Iteration : %lu  Sucessfully send the command \n", j);
             }
 
             else
@@ -427,7 +427,7 @@ void processing_the_command(UINT32 command)
 
         break;
 
-            case BL_READ_SECTOR_STATUS:
+    case BL_READ_SECTOR_STATUS:
         while ((c = getchar()) != '\n' && c != EOF)
             ;
 

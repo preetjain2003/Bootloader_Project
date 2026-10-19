@@ -51,6 +51,7 @@ UART_HandleTypeDef huart3;
 /* USER CODE BEGIN PV */
 
 UINT8 button_pressed_flag = 0;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -112,6 +113,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 
   LOG_MESSAGE(CUART, "Bootloader is running");
+  HAL_Delay(3000); // Delay for 1 second to allow the user to press the button
   while (1)
   {
     /* USER CODE END WHILE */
@@ -315,7 +317,8 @@ static void bootloader_jump_to_user_app(void)
 
   UINT32 **reset_handler_address = (UINT32 **)(USER_APP_SECTOR + 4);
   void (*reset_handler)(void) = (void (*)(void))*reset_handler_address;
-  LOG_MESSAGE(CUART, "Set the reset handler address : %x", reset_handler_address);
+////  LOG_MESSAGE(CUART, "Set the reset handler address : %x", reset_handler_address);// -> This generate
+ // Hardfault because stack is initialize ab
 
   __set_MSP(msp_value);
   reset_handler();

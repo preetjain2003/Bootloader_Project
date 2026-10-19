@@ -514,44 +514,16 @@ static void disable_r_w_protection_status(void){
 	while (pFlash_interface -> FLASH_SR & (1 << 16));
 	LOG_MESSAGE_WITH_CC(CUART, "FLASH_SR.BSY cleared; FLASH_OPTCR = 0x%08X", pFlash_interface -> FLASH_OPTCR);
 
-	// /*Replace with all 0's*/
-	pFlash_interface -> FLASH_OPTCR &=~ (0xFF << 8);
-	pFlash_interface -> FLASH_OPTCR |= (0xBB << 8);
-	LOG_MESSAGE_WITH_CC(CUART, "Configured protection option bytes to 0xBB; FLASH_OPTCR = 0x%08X", pFlash_interface -> FLASH_OPTCR);
+	/*Replace approriate value of protection*/
+	pFlash_interface -> FLASH_OPTCR &=~ (1 << 31);
+	pFlash_interface -> FLASH_OPTCR |= (0xFF << 16);
 
 	/*Select the Desired start bit*/
 	pFlash_interface -> FLASH_OPTCR |= (1 << 1);
-	LOG_MESSAGE_WITH_CC(CUART, "First option-byte update started; FLASH_OPTCR = 0x%08X", pFlash_interface -> FLASH_OPTCR);
 
-	LOG_MESSAGE_WITH_CC(CUART, "Waiting for the first option-byte update to complete");
+	LOG_MESSAGE_WITH_CC(CUART, "Waiting for the final option-byte update to complete");
 	while (pFlash_interface -> FLASH_SR & (1 << 16));
-	LOG_MESSAGE_WITH_CC(CUART, "First option-byte update completed; FLASH_OPTCR = 0x%08X", pFlash_interface -> FLASH_OPTCR);
-
-	// if(pFlash_interface -> FLASH_OPTCR & 0x01){
-	// 	// LOG_MESSAGE_WITH_CC(CUART, "FLASH_OPTCR was locked; unlocking option bytes before sector protection update");
-	// 	pFlash_interface -> FLASH_OPTKEYR = 0x08192A3B;
-	// 	pFlash_interface -> FLASH_OPTKEYR = 0x4C5D6E7F;
-	// }
-	// else{
-	// 	// LOG_MESSAGE_WITH_CC(CUART, "FLASH_OPTCR already unlocked; proceeding with sector protection update");
-	// }
-
-	// /*Replace approriate value of protection*/
-	// pFlash_interface -> FLASH_OPTCR &=~ (1 << 31);
-	// pFlash_interface -> FLASH_OPTCR |= (0xFF << 16);
-
-	// pFlash_interface -> FLASH_OPTCR &=~ (0xFF << 8);
-	// pFlash_interface -> FLASH_OPTCR |= (0xAA << 8);
-
-	// // LOG_MESSAGE_WITH_CC(CUART, "Prepared final read/write protection option bytes; FLASH_OPTCR = 0x%08X", pFlash_interface -> FLASH_OPTCR);
-
-	// /*Select the Desired start bit*/
-	// pFlash_interface -> FLASH_OPTCR |= (1 << 1);
-	// // LOG_MESSAGE_WITH_CC(CUART, "Final option-byte update started; FLASH_OPTCR = 0x%08X", pFlash_interface -> FLASH_OPTCR);
-
-	// // LOG_MESSAGE_WITH_CC(CUART, "Waiting for the final option-byte update to complete");
-	// while (pFlash_interface -> FLASH_SR & (1 << 16));
-	// // LOG_MESSAGE_WITH_CC(CUART, "Read/write protection update completed; FLASH_OPTCR = 0x%08X", pFlash_interface -> FLASH_OPTCR);
+	LOG_MESSAGE_WITH_CC(CUART, "Read/write protection update completed; FLASH_OPTCR = 0x%08X", pFlash_interface -> FLASH_OPTCR);
 }
 
 __attribute__((section(".my_function"))) static void dummy_function(void)
